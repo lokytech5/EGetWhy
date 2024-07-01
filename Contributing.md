@@ -72,11 +72,42 @@ We use the following branches:
 
 ### Current Feature Branches
 
-We maintain feature branches for ongoing development of new features. Contributors are encouraged to work on these branches for specific features.
+We maintain feature branches for ongoing development of new features. Contributors are encouraged to work on these branches for specific features or create a new feature branch.
 
 #### List of Feature Branches
 
-- `feature/new-feature-name`: Description of the new feature and what contributors need to know about it.
+- **User Registration and Authentication:**
+  - `feature/user-authentication`
+  - `feature/user-registration`
+- **Story Submission:**
+  - `feature/story-submission`
+  - `feature/add-story`
+- **Story Feed:**
+  - `feature/story-feed`
+  - `feature/story-list`
+- **Upvote Feature:**
+  - `feature/story-upvote`
+  - `feature/add-upvote`
+- **Categories for Stories:**
+  - `feature/story-categories`
+  - `feature/add-categories`
+- **User Profile:**
+  - `feature/user-profile`
+  - `feature/profile-page`
+- **Search Functionality:**
+  - `feature/search`
+  - `feature/story-search`
+- **Notifications:**
+  - `feature/notifications`
+  - `feature/user-notifications`
+- **Website Design:**
+  - `feature/website-theme`
+  - `feature/website-design`
+  - `feature/homepage-design`
+- **Homepage Features:**
+  - `feature/homepage`
+  - `feature/homepage-banner`
+  - `feature/homepage-layout`
 
 ### Creating a New Feature or Fix
 
