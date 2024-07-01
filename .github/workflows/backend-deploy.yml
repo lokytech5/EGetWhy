@@ -1,9 +1,10 @@
-name: Deploy Backend to Development
+name: Deploy Backend
 
 on:
   push:
     branches:
       - development
+      - production
 
 jobs:
   deploy:
@@ -16,19 +17,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "20"
+          node-version: "18"
 
       - name: Install Serverless Framework
         run: npm install -g serverless
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./backend
-
       - name: Deploy to AWS
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/production" ]; then
+            serverless deploy --stage production
+          else
+            serverless deploy --stage development
+          fi
+        working-directory: ./backend
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-        run: serverless deploy
-        working-directory: ./backend
