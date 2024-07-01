@@ -14,6 +14,16 @@ Thank you for your interest in contributing to our project! This guide will help
     - [Setup](#setup)
   - [Development Workflow](#development-workflow)
     - [Branching Strategy](#branching-strategy)
+    - [Current Feature Branches](#current-feature-branches)
+      - [List of Feature Branches](#list-of-feature-branches)
+    - [Creating a New Feature or Fix](#creating-a-new-feature-or-fix)
+      - [Working on a Feature Branch](#working-on-a-feature-branch)
+    - [Running Tests](#running-tests)
+    - [Building the Project](#building-the-project)
+  - [Continuous Integration/Continuous Deployment (CI/CD)](#continuous-integrationcontinuous-deployment-cicd)
+  - [Pull Requests](#pull-requests)
+  - [Code of Conduct](#code-of-conduct)
+  - [Support](#support)
 
 ## Getting Started
 
@@ -59,3 +69,63 @@ We use the following branches:
 
 - `development`: Active development branch.
 - `production`: Stable production branch.
+
+### Current Feature Branches
+
+We maintain feature branches for ongoing development of new features. Contributors are encouraged to work on these branches for specific features.
+
+#### List of Feature Branches
+
+- `feature/new-feature-name`: Description of the new feature and what contributors need to know about it.
+
+### Creating a New Feature or Fix
+
+#### Working on a Feature Branch
+
+To work on a feature branch, follow these steps:
+
+1. **Switch to the Feature Branch:**
+    ```bash
+    git checkout feature/new-feature-name
+    git pull origin feature/new-feature-name
+    ```
+
+2. **Make Your Changes:** Implement your feature or fix.
+3. **Commit Changes:** Commit your changes with a meaningful commit message.
+    ```bash
+    git add .
+    git commit -m "Implement part of new feature: description of changes"
+    ```
+
+4. **Push Changes:** Push your branch to your forked repository.
+    ```bash
+    git push origin feature/new-feature-name
+    ```
+
+5. **Submit Pull Request:** Open a pull request to merge your changes back into the feature branch.
+
+### Running Tests
+
+Before submitting your changes, ensure all tests pass.
+
+### Building the Project
+
+Follow the setup instructions in the main README to build and run the project locally.
+
+## Continuous Integration/Continuous Deployment (CI/CD)
+
+We use GitHub Actions for CI/CD. Pushing changes to the `development` branch triggers builds and deployments to the development environment. Pushing to the `production` branch triggers deployments to the production environment.
+
+## Pull Requests
+
+1. **Submit Pull Request:** Open a pull request to merge your feature branch into `development`.
+2. **Review Process:** Your pull request will be reviewed by other contributors. Make necessary changes if requested.
+3. **Merge:** Once approved, your pull request will be merged into `development`.
+
+## Code of Conduct
+
+Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Support
+
+For support, open an issue in the repository or contact the maintainers.
