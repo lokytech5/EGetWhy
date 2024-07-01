@@ -32,4 +32,3 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-args: "--prod"
           working-directory: ./frontend
-          git-filter: "**/frontend/**"
