@@ -56,7 +56,7 @@ Open http://localhost:3000 to view it in the browser.
 ```
 
 ## Contributing
-Contributions are welcome! Please follow the guidelines in the `CONTRIBUTING.md` file.
+Contributions are welcome! Please follow the guidelines in the `Contributing.md` file.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
