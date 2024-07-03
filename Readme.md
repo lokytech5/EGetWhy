@@ -18,7 +18,7 @@ EGetWhy is a fullstack open-source application aimed to connect and build networ
 ## Current Project Look
 Here’s how the project currently looks. This section will be updated with each new release.
 
-![HomePage](public/images/Screenshot1.png)
+![HomePage](frontend/public/images/Screenshot1.png)
 
 ## Getting Started
 ### Prerequisites
