@@ -1,18 +1,13 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: lokytech
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 app: egetwhy-app
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: backend
-
-stages:
-  default:
-    params:
-      tableName: "users-table-${sls:stage}"
 
 provider:
   name: aws
   runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
   iam:
     role:
       statements:
@@ -26,12 +21,10 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
-  environment:
-    USERS_TABLE: ${param:tableName}
 
 functions:
   api:
-    handler: handler.handler
+    handler: dist/handler.handler
     events:
       - httpApi: "*"
 
@@ -47,4 +40,14 @@ resources:
           - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${param:tableName}
+        TableName: ${self:custom.tableName}
+
+custom:
+  tableName: "users-table-${self:provider.stage}"
+
+package:
+  exclude:
+    - node_modules/**
+    - dist/**
+    - .serverless/**
+    - .git/**
