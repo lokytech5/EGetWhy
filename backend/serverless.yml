@@ -5,7 +5,7 @@ service: backend
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  stage: ${opt:stage, 'dev'} # default stag is 'dev'
   environment:
     USERS_TABLE: ${self:custom.tableName}
   iam:
