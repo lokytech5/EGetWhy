@@ -69,7 +69,7 @@ resources:
     S3BucketMyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: egg1
+        BucketName: egetwhy-bucket
 
 custom:
   tableName: "users-table-${self:provider.stage}"
