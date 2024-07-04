@@ -5,7 +5,7 @@ service: backend
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'} # default stag is 'dev'
+  stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
     USERS_TABLE: ${self:custom.tableName}
   iam:
@@ -24,13 +24,13 @@ provider:
 
 functions:
   getUser:
-    handler: src/users/handler.handler
+    handler: src/users/handler.getUser
     events:
       - http:
           path: users/{userId}
           method: get
   createUser:
-    handler: src/users/handler.handler
+    handler: src/users/handler.createUser
     events:
       - http:
           path: users
@@ -39,7 +39,7 @@ functions:
     handler: src/events/s3EventHandler.handler
     events:
       - s3:
-          bucket: e-getwhy-bucket-dev
+          bucket: ${self:custom.bucketName}
           event: s3:ObjectCreated:*
   dynamoEventHandler:
     handler: src/events/dynamoEventHandler.handler
@@ -69,11 +69,15 @@ resources:
     S3BucketMyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: e-get-bucket-dev
+        BucketName: egg1
 
 custom:
   tableName: "users-table-${self:provider.stage}"
-  bucketName: "e-getwhy-bucket-${self:provider.stage}"
+  bucketName: ${self:custom.bucketNames.${self:provider.stage}}
+
+  bucketNames:
+    dev: e-getwhy-bucket-dev
+    production: e-getwhy-bucket-prod
 
 package:
   exclude:
