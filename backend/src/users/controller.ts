@@ -20,7 +20,7 @@ export const getUser = async (req: Request, res: Response) => {
       const { userId, name } = Item as User;
       res.json({ userId, name });
     } else {
-      res.status(404).json({ error: 'Could not find user with provided "userId"' });
+      res.status(404).json({ error: 'Could not find user with "userId"' });
     }
   } catch (error) {
     console.log(error);
