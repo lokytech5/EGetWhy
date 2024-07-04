@@ -23,10 +23,33 @@ provider:
             - Fn::GetAtt: [UsersTable, Arn]
 
 functions:
-  api:
-    handler: dist/handler.handler
+  getUser:
+    handler: src/users/handler.handler
     events:
-      - httpApi: "*"
+      - http:
+          path: users/{userId}
+          method: get
+  createUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users
+          method: post
+  s3EventHandler:
+    handler: src/events/s3EventHandler.handler
+    events:
+      - s3:
+          bucket: e-getwhy-bucket-dev
+          event: s3:ObjectCreated:*
+  dynamoEventHandler:
+    handler: src/events/dynamoEventHandler.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - UsersTable
+              - StreamArn
 
 resources:
   Resources:
@@ -40,10 +63,17 @@ resources:
           - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
         TableName: ${self:custom.tableName}
+    S3BucketMyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: e-get-bucket-dev
 
 custom:
   tableName: "users-table-${self:provider.stage}"
+  bucketName: "e-getwhy-bucket-${self:provider.stage}"
 
 package:
   exclude:
