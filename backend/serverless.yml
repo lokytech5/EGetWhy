@@ -69,7 +69,7 @@ resources:
     S3BucketMyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: e-get-bucket-dev
+        BucketName: e-get-buckets-dev
 
 custom:
   tableName: "users-table-${self:provider.stage}"
