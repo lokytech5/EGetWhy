@@ -31,8 +31,10 @@ provider:
             - cognito-idp:AdminInitiateAuth
             - cognito-idp:InitiateAuth
             - cognito-idp:SignUp
+            - cognito-idp:AdminUserGlobalSignOut
+            - cognito-idp:AdminGetUser
           Resource: 
-            - arn:aws:cognito-idp:us-east-1:058264434140:userpool/us-east-1_cb95pD9fR
+            - arn:aws:cognito-idp:us-east-1:058264434140:userpool/us-east-1_xtNgH0g6z
 
 functions:
   getUserById:
@@ -54,6 +56,13 @@ functions:
     events:
       - http:
           path: users/verify
+          method: post
+
+  loginUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: login
           method: post
 
   s3EventHandler:
