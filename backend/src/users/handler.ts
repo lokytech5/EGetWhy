@@ -1,12 +1,12 @@
 import express from "express";
 import serverless from "serverless-http";
-import { getUser, createUser } from "./controller";
+import { getUserbyId, createUser } from "./controller";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/users/:userId", getUser);
+app.get("/users/:userId", getUserbyId);
 app.post("/users", createUser);
 
 app.use((req, res) => {

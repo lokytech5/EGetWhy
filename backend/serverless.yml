@@ -8,6 +8,8 @@ provider:
   stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
     USERS_TABLE: ${self:custom.tableName}
+    COGNITO_USER_POOL_ID: us-east-1_cb95pD9fR
+    COGNITO_CLIENT_ID: 60vrobqb5o5rgl3hfp74l7805m
   iam:
     role:
       statements:
@@ -21,6 +23,15 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:InitiateAuth
+            - cognito-idp:SignUp
+          Resource: 
+            - arn:aws:cognito-idp:us-east-1:058264434140:userpool/us-east-1_cb95pD9fR
 
 functions:
   getUser:
