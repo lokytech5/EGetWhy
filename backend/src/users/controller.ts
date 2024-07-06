@@ -8,11 +8,17 @@ import AWS from "aws-sdk";
 const USERS_TABLE = process.env.USERS_TABLE;
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
+function isAWSError(error: unknown): error is AWS.AWSError {
+  return (error as AWS.AWSError).code !== undefined;
+}
+
 export const getUserbyId = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
   const params = {
     TableName: USERS_TABLE,
     Key: {
-      userId: req.params.userId,
+      userId
     },
   };
 
@@ -20,20 +26,9 @@ export const getUserbyId = async (req: Request, res: Response) => {
     const command = new GetCommand(params);
     const { Item } = await docClient.send(command);
     if (Item) {
-      const { userId, 
-              username, 
-              email, 
-              fullName, 
-              profilePictureURL, 
-              bio, 
-              location, 
-              createdAt, 
-              updatedAt } = Item as User;
-
-    res.json({ userId, username, email, fullName, profilePictureURL, bio, location, createdAt, updatedAt });
-    } 
-    else {
-      res.status(404).json({ error: 'Could not find user with "userId"' });
+      res.json(Item);
+    } else {
+      res.status(404).json({ error: `Could not find user with userId: ${userId}` });
     }
   } catch (error) {
     console.log(error);
@@ -67,12 +62,41 @@ export const createUser = async (req: Request, res: Response) => {
     const cognitoResponse = await cognito.signUp(cognitoParams).promise();
     console.log('Cognito sign-up response:', cognitoResponse);
 
-    res.status(201).json(cognitoResponse);
-  } catch (error) {
-    console.error('Error during user registration:', error);
+   // Save user details in DynamoDB
+   const userId = cognitoResponse.UserSub;
+   const createdAt = new Date().toISOString();
+   const updatedAt = createdAt;
+   const user = {
+    userId,
+    username,
+    email,
+    fullName,
+    profilePictureURL: '',
+    bio: '',
+    location: '',
+    createdAt,
+    updatedAt
+  };
+  const dynamoParams = {
+    TableName: USERS_TABLE,
+    Item: user,
+  };
+
+   const putCommand = new PutCommand(dynamoParams);
+   await docClient.send(putCommand);
+
+   res.status(201).json({ message: 'User created successfully', user });
+ } catch (error) {
+  console.error('Error during user registration:', error);
+  
+  if (isAWSError(error) && error.code === 'UsernameExistsException') {
+    res.status(400).json({ error: 'User already exists' });
+  } else {
     res.status(500).json({ error: 'Could not create user' });
   }
+}
 };
+
 
 export const verifyUser = async(req: Request, res: Response) => {
   const {email, code } = req.body;
@@ -89,7 +113,7 @@ export const verifyUser = async(req: Request, res: Response) => {
   };
 
   try {
-    // Verify user in Cognito
+    
     const cognitoResponse = await cognito.confirmSignUp(cognitoParams).promise();
     console.log('Cognito verify response:', cognitoResponse);
 
