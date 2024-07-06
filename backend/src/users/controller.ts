@@ -73,3 +73,33 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Could not create user' });
   }
 };
+
+export const verifyUser = async(req: Request, res: Response) => {
+  const {email, code } = req.body;
+
+  if (!email || !code) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const cognitoParams = {
+    ClientId: process.env.COGNITO_CLIENT_ID!,
+    SecretHash: getSecretHash(email),
+    Username: email,
+    ConfirmationCode: code,
+  };
+
+  try {
+    // Verify user in Cognito
+    const cognitoResponse = await cognito.confirmSignUp(cognitoParams).promise();
+    console.log('Cognito verify response:', cognitoResponse);
+
+    if (cognitoResponse) {
+      res.status(200).json({ message: 'User verified successfully' });
+    } else {
+      res.status(500).json({ error: 'User verification failed' });
+    }
+  } catch (error) {
+    console.error('Error during user verification:', error);
+    res.status(500).json({ error: 'Could not verify user' });
+  }
+};

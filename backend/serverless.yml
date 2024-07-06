@@ -41,18 +41,28 @@ functions:
       - http:
           path: users/{userId}
           method: get
+
   createUser:
     handler: src/users/handler.handler
     events:
       - http:
           path: users
           method: post
+
+  verifyUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users/verify
+          method: post
+
   s3EventHandler:
     handler: src/events/s3EventHandler.handler
     events:
       - s3:
           bucket: ${self:custom.bucketName}
           event: s3:ObjectCreated:*
+
   dynamoEventHandler:
     handler: src/events/dynamoEventHandler.handler
     events:
