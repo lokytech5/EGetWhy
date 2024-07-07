@@ -65,6 +65,10 @@ functions:
           path: login
           method: post
 
+  sendWelcomeEmail:
+    handler: src/users/sendWelcomeEmail.handler
+    events: []
+
   s3EventHandler:
     handler: src/events/s3EventHandler.handler
     events:
