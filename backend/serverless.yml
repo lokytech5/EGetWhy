@@ -7,10 +7,10 @@ provider:
   runtime: nodejs20.x
   stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
-    USERS_TABLE: ${self:custom.tableName}
-    COGNITO_USER_POOL_ID: us-east-1_xtNgH0g6z
-    COGNITO_CLIENT_ID: 33512jkohhtgp2f8kqimmkeh6i
-    COGNITO_CLIENT_SECRET: 1rdenv71n4h4vhtgm1d57njemo59mr083m7nqpsiifcksmoadt6d
+    USERS_TABLE: ${env:USERS_TABLE}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
   iam:
     role:
       statements:
@@ -96,7 +96,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        TableName: ${self:custom.tableName}
+        TableName: ${env:USERS_TABLE}
     S3BucketMyBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -109,6 +109,15 @@ custom:
   bucketNames:
     dev: e-getwhy-bucket-dev
     production: e-getwhy-bucket-prod
+
+  serverless-offline-watcher:
+    - path: src/users/handler.ts
+      command: npm run start
+
+plugins:
+  - serverless-offline
+  - serverless-offline-watcher
+  - serverless-dotenv-plugin
 
 package:
   exclude:

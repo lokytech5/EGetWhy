@@ -14,6 +14,7 @@ function isAWSError(error: unknown): error is AWS.AWSError {
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
 
+
   const params = {
     TableName: USERS_TABLE,
     Key: { userId },
@@ -22,9 +23,11 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const command = new GetCommand(params);
     const { Item } = await docClient.send(command);
+
     if (Item) {
       res.json(Item);
     } else {
+      console.error(`Could not find user with userId: ${userId}`);
       res.status(404).json({ error: `Could not find user with userId: ${userId}` });
     }
   } catch (error) {
@@ -52,11 +55,8 @@ export const createUser = async (req: Request, res: Response) => {
   };
 
   try {
-    console.log('Attempting to sign up user in Cognito with params:', cognitoParams);
-
-    // Create user in Cognito
+  
     const cognitoResponse = await cognito.signUp(cognitoParams).promise();
-    console.log('Cognito sign-up response:', cognitoResponse);
 
     // Save user details in DynamoDB
     const userId = cognitoResponse.UserSub;
@@ -111,11 +111,8 @@ export const loginUser = async (req: Request, res: Response) => {
   };
 
   try {
-    console.log('Attempting to log in user with params:', JSON.stringify(authParams, null, 2));
 
-    // Authenticate user in Cognito
     const authResponse = await cognito.adminInitiateAuth(authParams).promise();
-    console.log('Cognito login response:', JSON.stringify(authResponse, null, 2));
 
     const { AccessToken } = authResponse.AuthenticationResult!;
     res.status(200).json({
@@ -154,7 +151,6 @@ export const verifyUser = async (req: Request, res: Response) => {
 
   try {
     const cognitoResponse = await cognito.confirmSignUp(cognitoParams).promise();
-    console.log('Cognito verify response:', cognitoResponse);
 
     if (cognitoResponse) {
       res.status(200).json({ message: 'User verified successfully' });
