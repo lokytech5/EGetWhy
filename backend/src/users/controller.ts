@@ -6,6 +6,7 @@ import AWS from "aws-sdk";
 
 const USERS_TABLE = process.env.USERS_TABLE;
 const cognito = new AWS.CognitoIdentityServiceProvider();
+const lambda = new AWS.Lambda();
 
 function isAWSError(error: unknown): error is AWS.AWSError {
   return (error as AWS.AWSError).code !== undefined;
@@ -153,6 +154,30 @@ export const verifyUser = async (req: Request, res: Response) => {
     const cognitoResponse = await cognito.confirmSignUp(cognitoParams).promise();
 
     if (cognitoResponse) {
+      
+      const params = {
+        TableName: USERS_TABLE,
+        Key: { email },
+      };
+      const command = new GetCommand(params);
+      const { Item } = await docClient.send(command);
+
+      if (Item) {
+        const lambdaParams = {
+          FunctionName: "sendWelcomeEmail",
+          InvocationType: "Event",
+          Payload: JSON.stringify({
+            email: Item.email,
+            fullName: Item.fullName,
+          }),
+        };
+
+        // Invoke the Lambda function without awaiting the result
+        lambda.invoke(lambdaParams).promise().catch(error => {
+          console.error('Error invoking sendWelcomeEmail Lambda:', error);
+        });
+      }
+
       res.status(200).json({ message: 'User verified successfully' });
     } else {
       res.status(500).json({ error: 'User verification failed' });

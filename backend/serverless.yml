@@ -65,6 +65,27 @@ functions:
           path: login
           method: post
 
+  sendWelcomeEmail:
+    handler: src/users/sendWelcomeEmail.handler
+    events: []
+
+  s3EventHandler:
+    handler: src/events/s3EventHandler.handler
+    events:
+      - s3:
+          bucket: ${self:custom.bucketName}
+          event: s3:ObjectCreated:*
+
+  dynamoEventHandler:
+    handler: src/events/dynamoEventHandler.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - UsersTable
+              - StreamArn
+
 resources:
   Resources:
     UsersTable:
