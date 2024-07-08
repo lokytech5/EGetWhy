@@ -176,6 +176,7 @@ export const verifyUser = async (req: Request, res: Response) => {
       const command = new GetCommand(params);
       const { Item } = await docClient.send(command);
 
+    // Using SendGird to sendWelcomeEmail Lambda function within the lambda function
       if (Item) {
         const lambdaParams = {
           FunctionName: `sendWelcomeEmail-${process.env.STAGE}`,

@@ -1,6 +1,11 @@
-import AWS from "aws-sdk";
+// import AWS from "aws-sdk";
+import sgMail from '@sendgrid/mail';
 
-const ses = new AWS.SES();
+// const ses = new AWS.SES();
+
+const sendGridApiKey = process.env.SENDGRID_API_KEY as string;
+sgMail.setApiKey(sendGridApiKey);
+
 
 interface EmailParams {
     toAddresses: string[];
@@ -27,8 +32,17 @@ export const sendEmail = async ({ toAddresses, subject, body, source} : EmailPar
         Source: source,
       };
 
+      const msg = {
+        to: toAddresses,
+        from: source,
+        subject: subject,
+        text: body,
+    };
+
+
       try {
-        await ses.sendEmail(params).promise();
+        // await ses.sendEmail(params).promise();
+        await sgMail.send(msg);
         console.log(`Email sent to ${toAddresses.join(", ")}`);
       } catch (error) {
         console.error("Error sending email:", error);
