@@ -13,7 +13,7 @@ provider:
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     STAGE: ${self:provider.stage}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
-    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    S3_BUCKET_NAME: ${self:custom.bucketName}
 
   iam:
     role:
