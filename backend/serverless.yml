@@ -50,7 +50,7 @@ provider:
             - s3:GetObject
             - s3:ListBucket
           Resource:
-            - arn:aws:s3:::${self:custom.bucketNames} 
+            - arn:aws:s3:::${self:custom.bucketName} 
             - arn:aws:s3:::${self:custom.bucketName}/*
         - Effect: Allow
           Action:
