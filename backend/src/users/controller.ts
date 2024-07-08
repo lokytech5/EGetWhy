@@ -4,7 +4,7 @@ import { docClient } from "../utils/dynamoClient";
 import { getSecretHash } from "../utils/cognitoUtils";
 import AWS from "aws-sdk";
 import { S3 } from 'aws-sdk';
-import { isAWSError } from "../utils/awsErrorUtils";
+import { isAWSError } from "../utils/errorUtils";
 
 const USERS_TABLE = process.env.USERS_TABLE;
 const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -210,7 +210,6 @@ export const verifyUser = async (req: Request, res: Response) => {
   }
 };
 
-
 export const uploadProfilePicture = async (req: Request, res: Response) => {
   const { userId } = req.body;
   const file = req.file;
@@ -221,7 +220,25 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
 
   try {
 
-    const fileName = `${userId}.jpeg`;
+    console.log('File details:', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+    });
+
+    const extensionMap: { [key: string]: string } = {
+      'image/jpeg': 'jpeg',
+      'image/png': 'png',
+      'image/jpg': 'jpg',
+      'image/svg+xml': 'svg',
+    };
+
+    const extension = extensionMap[file.mimetype];
+    if (!extension) {
+      return res.status(400).json({ error: 'Unsupported file type' });
+    }
+
+    const fileName = `${userId}.${extension}`;
     const params = {
       Bucket: BUCKET_NAME,
       Key: fileName,

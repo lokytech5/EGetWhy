@@ -3,16 +3,19 @@ import serverless from "serverless-http";
 import { createUser, verifyUser, loginUser, getUserById, uploadProfilePicture } from "./controller";
 import { validateToken } from "../middleware/validateToken";
 import multer from "multer";
+import fileUploads from "../middleware/fileUpload";
 
 const app = express();
 
 app.use(express.json());
-const upload = multer();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 app.get("/users/:userId", validateToken, getUserById);
 app.post("/users", createUser);
 app.post("/users/verify", verifyUser);
-app.post("/users/upload-profile-picture", validateToken, upload.single('file'), uploadProfilePicture);
+app.post("/users/upload-profile-picture", validateToken, fileUploads.single('file'), uploadProfilePicture);
 app.post("/login", loginUser);
 
 
