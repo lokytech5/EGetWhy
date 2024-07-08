@@ -3,14 +3,12 @@ import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient } from "../utils/dynamoClient";
 import { getSecretHash } from "../utils/cognitoUtils";
 import AWS from "aws-sdk";
+import { isAWSError } from "../utils/awsErrorUtils";
 
 const USERS_TABLE = process.env.USERS_TABLE;
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const lambda = new AWS.Lambda();
 
-function isAWSError(error: unknown): error is AWS.AWSError {
-  return (error as AWS.AWSError).code !== undefined;
-}
 
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
@@ -154,17 +152,33 @@ export const verifyUser = async (req: Request, res: Response) => {
     const cognitoResponse = await cognito.confirmSignUp(cognitoParams).promise();
 
     if (cognitoResponse) {
-      
+      // Use email to get userId from Cognito
+      const userResponse = await cognito.adminGetUser({
+        UserPoolId: process.env.COGNITO_USER_POOL_ID!,
+        Username: email,
+      }).promise();
+
+      const userAttributes = userResponse.UserAttributes;
+      if (!userAttributes) {
+        throw new Error('UserAttributes not found in Cognito response');
+      }
+
+      const userId = userAttributes.find(attr => attr.Name === 'sub')?.Value;
+
+      if (!userId) {
+        throw new Error('UserId not found in Cognito response');
+      }
+
       const params = {
         TableName: USERS_TABLE,
-        Key: { email },
+        Key: { userId },
       };
       const command = new GetCommand(params);
       const { Item } = await docClient.send(command);
 
       if (Item) {
         const lambdaParams = {
-          FunctionName: "sendWelcomeEmail",
+          FunctionName: `sendWelcomeEmail-${process.env.STAGE}`,
           InvocationType: "Event",
           Payload: JSON.stringify({
             email: Item.email,
@@ -187,3 +201,6 @@ export const verifyUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Could not verify user' });
   }
 };
+
+
+

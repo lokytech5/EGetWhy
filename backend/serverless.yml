@@ -11,6 +11,7 @@ provider:
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    STAGE: ${self:provider.stage}
   iam:
     role:
       statements:
@@ -35,6 +36,17 @@ provider:
             - cognito-idp:AdminGetUser
           Resource: 
             - arn:aws:cognito-idp:us-east-1:058264434140:userpool/us-east-1_xtNgH0g6z
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource:
+            - arn:aws:lambda:us-east-1:058264434140:function:sendWelcomeEmail-${self:provider.stage}
+        - Effect: Allow
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+          Resource:
+            - arn:aws:ses:us-east-1:058264434140:identity/denisbrofa@gmail.com
 
 functions:
   getUserById:
@@ -67,6 +79,7 @@ functions:
 
   sendWelcomeEmail:
     handler: src/users/sendWelcomeEmail.handler
+    name: sendWelcomeEmail-${self:provider.stage}
     events: []
 
   s3EventHandler:
