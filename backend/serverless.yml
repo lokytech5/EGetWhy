@@ -155,11 +155,6 @@ custom:
     - path: src/users/handler.ts
       command: npm run start
 
-# plugins:
-#   - serverless-offline
-#   - serverless-offline-watcher
-#   - serverless-dotenv-plugin
-
 package:
   exclude:
     - node_modules/**
