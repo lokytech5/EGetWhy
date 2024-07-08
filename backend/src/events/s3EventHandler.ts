@@ -14,7 +14,7 @@ export const handler: S3Handler = async (event) => {
     const key = record.s3.object.key;
     const url = `https://${bucket}.s3.amazonaws.com/${key}`;
     
-    // Extract userId from the key
+    // Extract userId from the keys
     const userId = key.split('/')[0];
     
     const params = {
