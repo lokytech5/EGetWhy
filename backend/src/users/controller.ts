@@ -176,21 +176,22 @@ export const verifyUser = async (req: Request, res: Response) => {
       const command = new GetCommand(params);
       const { Item } = await docClient.send(command);
 
-      if (Item) {
-        const lambdaParams = {
-          FunctionName: `sendWelcomeEmail-${process.env.STAGE}`,
-          InvocationType: "Event",
-          Payload: JSON.stringify({
-            email: Item.email,
-            fullName: Item.fullName,
-          }),
-        };
+     // Commented out the invocation of sendWelcomeEmail Lambda function
+      // if (Item) {
+      //   const lambdaParams = {
+      //     FunctionName: `sendWelcomeEmail-${process.env.STAGE}`,
+      //     InvocationType: "Event",
+      //     Payload: JSON.stringify({
+      //       email: Item.email,
+      //       fullName: Item.fullName,
+      //     }),
+      //   };
 
-        // Invoke the Lambda function without awaiting the result
-        lambda.invoke(lambdaParams).promise().catch(error => {
-          console.error('Error invoking sendWelcomeEmail Lambda:', error);
-        });
-      }
+      //   // Invoke the Lambda function without awaiting the result
+      //   lambda.invoke(lambdaParams).promise().catch(error => {
+      //     console.error('Error invoking sendWelcomeEmail Lambda:', error);
+      //   });
+      // }
 
       res.status(200).json({ message: 'User verified successfully' });
     } else {
