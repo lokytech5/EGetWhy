@@ -166,3 +166,4 @@ package:
     - dist/**
     - .serverless/**
     - .git/**
+    - README.md
