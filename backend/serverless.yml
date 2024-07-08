@@ -13,6 +13,8 @@ provider:
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     STAGE: ${self:provider.stage}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+
   iam:
     role:
       statements:
@@ -42,6 +44,19 @@ provider:
             - lambda:InvokeFunction
           Resource:
             - arn:aws:lambda:us-east-1:058264434140:function:sendWelcomeEmail-${self:provider.stage}
+        - Effect: Allow
+          Action: 
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${env:S3_BUCKET_NAME} 
+            - arn:aws:s3:::${self:custom.bucketName}/*
+        - Effect: Allow
+          Action:
+            - dynamodb:UpdateItem
+          Resource:
+            - Fn::GetAtt: [UsersTable, Arn]
         # Commented out permissions for invoking sendWelcomeEmail Lambda and sending emails
         # - Effect: Allow
         #   Action:
@@ -83,6 +98,13 @@ functions:
     handler: src/users/sendWelcomeEmail.handler
     name: sendWelcomeEmail-${self:provider.stage}
     events: []
+
+  uploadProfilePicture:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users/upload-profile-picture
+          method: post
 
   s3EventHandler:
     handler: src/events/s3EventHandler.handler
