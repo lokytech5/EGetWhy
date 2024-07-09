@@ -18,7 +18,6 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
   }
 
   try {
-    // Verify the token
     const payload = await verifier.verify(token);
 
     req.user = payload.sub;
