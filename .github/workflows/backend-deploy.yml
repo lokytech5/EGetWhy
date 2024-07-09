@@ -20,7 +20,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install --production
+        run: npm install
         working-directory: ./backend
 
       - name: Install Serverless Framework
