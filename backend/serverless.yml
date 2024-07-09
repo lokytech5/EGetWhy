@@ -58,6 +58,13 @@ provider:
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
 
+layers:
+  myLambdaLayer:
+    path: lambda_layer
+    name: ${self:provider.stage}-myLambdaLayer
+    compatibleRuntimes:
+      - nodejs20.x
+
 functions:
   getUserById:
     handler: src/users/handler.handler
@@ -155,7 +162,6 @@ resources:
 custom:
   tableName: "users-table-${self:provider.stage}"
   bucketName: ${self:custom.bucketNames.${self:provider.stage}}
-
   bucketNames:
     dev: e-getwhy-bucket-dev
     production: e-getwhy-bucket-prod
@@ -164,6 +170,22 @@ custom:
     - path: src/users/handler.ts
       command: npm run start
 
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude: []
+    external:
+      - "express"
+      - "multer"
+      - "aws-jwt-verify"
+      - "@sendgrid/mail"
+      - "@aws-sdk/lib-dynamodb"
+    target: "node20"
+    define:
+      "require.resolve": undefined
+    platform: "node"
+
 package:
   exclude:
     - node_modules/**
@@ -171,3 +193,6 @@ package:
     - .serverless/**
     - .git/**
     - README.md
+
+plugins:
+  - serverless-dotenv-plugin
