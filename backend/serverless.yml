@@ -5,7 +5,7 @@ service: backend
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  stage: ${opt:stage, 'dev'} # defaut stage is 'dev'
   environment:
     USERS_TABLE: ${env:USERS_TABLE}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
@@ -64,6 +64,12 @@ provider:
         #     - ses:SendRawEmail
         #   Resource:
         #     - arn:aws:ses:us-east-1:058264434140:identity/denisbrofa@gmail.com
+
+layers:
+  common:
+    path: layer
+    compatibleRuntimes:
+      - nodejs20.x
 
 functions:
   getUserById:
@@ -154,11 +160,6 @@ custom:
   serverless-offline-watcher:
     - path: src/users/handler.ts
       command: npm run start
-
-plugins:
-  - serverless-offline
-  - serverless-offline-watcher
-  - serverless-dotenv-plugin
 
 package:
   exclude:
