@@ -5,7 +5,8 @@ service: backend
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'} # defaut stage is 'dev'
+  stage: ${opt:stage, 'dev'}
+  profile: BigTee
   environment:
     USERS_TABLE: ${env:USERS_TABLE}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
@@ -57,23 +58,12 @@ provider:
             - dynamodb:UpdateItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
-        # Commented out permissions for invoking sendWelcomeEmail Lambda and sending emails
-        # - Effect: Allow
-        #   Action:
-        #     - ses:SendEmail
-        #     - ses:SendRawEmail
-        #   Resource:
-        #     - arn:aws:ses:us-east-1:058264434140:identity/denisbrofa@gmail.com
-
-layers:
-  common:
-    path: layer
-    compatibleRuntimes:
-      - nodejs20.x
 
 functions:
   getUserById:
     handler: src/users/handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - http:
           path: users/{userId}
@@ -81,6 +71,8 @@ functions:
 
   createUser:
     handler: src/users/handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - http:
           path: users
@@ -88,6 +80,8 @@ functions:
 
   verifyUser:
     handler: src/users/handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - http:
           path: users/verify
@@ -95,6 +89,8 @@ functions:
 
   loginUser:
     handler: src/users/handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - http:
           path: login
@@ -103,10 +99,14 @@ functions:
   sendWelcomeEmail:
     handler: src/users/sendWelcomeEmail.handler
     name: sendWelcomeEmail-${self:provider.stage}
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events: []
 
   uploadProfilePicture:
     handler: src/users/handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - http:
           path: users/upload-profile-picture
@@ -114,6 +114,8 @@ functions:
 
   s3EventHandler:
     handler: src/events/s3EventHandler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - s3:
           bucket: ${self:custom.bucketName}
@@ -121,6 +123,8 @@ functions:
 
   dynamoEventHandler:
     handler: src/events/dynamoEventHandler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:058264434140:layer:myLambdaLayer:1
     events:
       - stream:
           type: dynamodb
