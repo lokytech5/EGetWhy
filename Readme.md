@@ -19,7 +19,7 @@ EGetWhy is a fullstack open-source application aimed to connect and build networ
 Here’s how the project currently looks. This section will be updated with each new release.
 
 ![HomePage](frontend/public/images/Screenshot1.png)
-![Current Project View](https://e-get-why.vercel.app/)
+[Current Project View](https://e-get-why.vercel.app/)
 
 ## Getting Started
 ### Prerequisites
