@@ -159,4 +159,6 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Support
 
-For support, open an issue in the repository or contact the maintainers.
+If you have any questions or need assistance, please reach out via our issue tracker or contact the maintainers.
+
+Thank you for contributing! We appreciate your efforts in making this project better. Happy coding! 🚀

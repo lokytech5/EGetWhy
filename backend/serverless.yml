@@ -1,18 +1,20 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: lokytech
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 app: egetwhy-app
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: backend
-
-stages:
-  default:
-    params:
-      tableName: "users-table-${sls:stage}"
 
 provider:
   name: aws
   runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  environment:
+    USERS_TABLE: ${env:USERS_TABLE}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    STAGE: ${self:provider.stage}
+    SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
+    S3_BUCKET_NAME: ${self:custom.bucketName}
+
   iam:
     role:
       statements:
@@ -26,14 +28,100 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
-  environment:
-    USERS_TABLE: ${param:tableName}
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:InitiateAuth
+            - cognito-idp:SignUp
+            - cognito-idp:AdminUserGlobalSignOut
+            - cognito-idp:AdminGetUser
+          Resource: 
+            - arn:aws:cognito-idp:us-east-1:058264434140:userpool/us-east-1_xtNgH0g6z
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource:
+            - arn:aws:lambda:us-east-1:058264434140:function:sendWelcomeEmail-${self:provider.stage}
+        - Effect: Allow
+          Action: 
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${self:custom.bucketName} 
+            - arn:aws:s3:::${self:custom.bucketName}/*
+        - Effect: Allow
+          Action:
+            - dynamodb:UpdateItem
+          Resource:
+            - Fn::GetAtt: [UsersTable, Arn]
+        # Commented out permissions for invoking sendWelcomeEmail Lambda and sending emails
+        # - Effect: Allow
+        #   Action:
+        #     - ses:SendEmail
+        #     - ses:SendRawEmail
+        #   Resource:
+        #     - arn:aws:ses:us-east-1:058264434140:identity/denisbrofa@gmail.com
 
 functions:
-  api:
-    handler: handler.handler
+  getUserById:
+    handler: src/users/handler.handler
     events:
-      - httpApi: "*"
+      - http:
+          path: users/{userId}
+          method: get
+
+  createUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users
+          method: post
+
+  verifyUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users/verify
+          method: post
+
+  loginUser:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: login
+          method: post
+
+  sendWelcomeEmail:
+    handler: src/users/sendWelcomeEmail.handler
+    name: sendWelcomeEmail-${self:provider.stage}
+    events: []
+
+  uploadProfilePicture:
+    handler: src/users/handler.handler
+    events:
+      - http:
+          path: users/upload-profile-picture
+          method: post
+
+  s3EventHandler:
+    handler: src/events/s3EventHandler.handler
+    events:
+      - s3:
+          bucket: ${self:custom.bucketName}
+          event: s3:ObjectCreated:*
+
+  dynamoEventHandler:
+    handler: src/events/dynamoEventHandler.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - UsersTable
+              - StreamArn
 
 resources:
   Resources:
@@ -47,4 +135,35 @@ resources:
           - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${param:tableName}
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        TableName: ${env:USERS_TABLE}
+    S3BucketMyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: egetwhy-bucket
+
+custom:
+  tableName: "users-table-${self:provider.stage}"
+  bucketName: ${self:custom.bucketNames.${self:provider.stage}}
+
+  bucketNames:
+    dev: e-getwhy-bucket-dev
+    production: e-getwhy-bucket-prod
+
+  serverless-offline-watcher:
+    - path: src/users/handler.ts
+      command: npm run start
+
+plugins:
+  - serverless-offline
+  - serverless-offline-watcher
+  - serverless-dotenv-plugin
+
+package:
+  exclude:
+    - node_modules/**
+    - dist/**
+    - .serverless/**
+    - .git/**
+    - README.md

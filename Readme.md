@@ -1,8 +1,7 @@
 # EGetWhy
 
 ## Project Overview
-EGetWhy is a fullstack open-source application aimed to connect and build networks based on shared experiences and sloves common frustrations faced by
-Nigerians. It serve as a unique resource, tackling the "why" behind common issues with the tegline #egetwhy. inspired by fishbowl website.
+EGetWhy is a fullstack open-source application aimed to connect and build networks based on personal stories and shared experiences about difficulties they face Nigerians. It serve as a unique resource, tackling the "why" behind common issues with the tagline #egetwhy. The main focus of this platform is to to provide a specialized social networking environment where Nigerians can explore and discuss the various personal, societal, and professional challenges they face. inspired by fishbowl website.
 
 ## Technologies Used
 - Frontend: Next.js, deployed on Vercel
@@ -14,6 +13,12 @@ Nigerians. It serve as a unique resource, tackling the "why" behind common issue
 - Story submission with #egetwhy
 - Story feed with upvote feature
 - Categories for different types of stories
+- Community Support
+
+## Current Project Look
+Here’s how the project currently looks. This section will be updated with each new release.
+
+![HomePage](frontend/public/images/Screenshot1.png)
 
 ## Getting Started
 ### Prerequisites
