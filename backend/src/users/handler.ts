@@ -2,15 +2,11 @@ import express from "express";
 import serverless from "serverless-http";
 import { createUser, verifyUser, loginUser, getUserById, uploadProfilePicture } from "./controller";
 import { validateToken } from "../middleware/validateToken";
-import multer from "multer";
-import fileUploads from "../middleware/fileUpload";
+import fileUploads from "../middleware/fileUploads";
 
 const app = express();
 
 app.use(express.json());
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 app.get("/users/:userId", validateToken, getUserById);
 app.post("/users", createUser);
