@@ -1,6 +1,8 @@
 import { getSecretHash } from "../../../lib/cognitoUtils";
-import { S3 } from "aws-sdk";
-import AWS from "aws-sdk";
+import { docClient } from "../../../lib/dynamoClient";
+import { isAWSError } from "../../../lib/errorUtils";
+import { PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import AWS, { S3 } from "aws-sdk";
 import { Request, Response } from "express";
 
 
