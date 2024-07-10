@@ -1,4 +1,4 @@
-import { sendEmail } from "../../../lib/sendEmailUtils";
+
 
 export const handler = async (event: any) => {
   const { email, fullName } = event;
