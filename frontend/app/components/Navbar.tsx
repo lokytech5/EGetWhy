@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 text-neutral-content">
       <div className="navbar-start">
         <div className="drawer-end">
           <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
