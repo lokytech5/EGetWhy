@@ -1,0 +1,63 @@
+service: user-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}  # Default to 'dev' if not specified
+  environment:
+    USERS_TABLE: ${env:USERS_TABLE}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    NEW_BUCKET_NAME: ${env:NEW_BUCKET_NAME}
+    STAGE: ${self:provider.stage}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 
+            'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+          Resource: 
+            - arn:aws:s3:::${env:S3_BUCKET_NAME}
+            - arn:aws:s3:::${env:S3_BUCKET_NAME}/*
+            - arn:aws:s3:::${env:NEW_BUCKET_NAME}
+            - arn:aws:s3:::${env:NEW_BUCKET_NAME}/*
+
+functions:
+  getUserById:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/{userId}
+          method: get
+
+  uploadProfilePicture:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/upload-profile-picture
+          method: post
+
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - .git/**
+    - .vscode/**
+    - README.md
+    - package-lock.json
