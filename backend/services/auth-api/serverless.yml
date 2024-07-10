@@ -1,0 +1,89 @@
+service: auth-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}  # Default to 'dev' if not specified
+  environment:
+    USERS_TABLE:
+      'Fn::ImportValue': UsersTableName-${self:provider.stage}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    STAGE: ${self:provider.stage}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:InitiateAuth
+            - cognito-idp:SignUp
+            - cognito-idp:AdminUserGlobalSignOut
+            - cognito-idp:AdminGetUser
+          Resource: 
+            - arn:aws:cognito-idp:us-east-1:058264434140:userpool/${env:COGNITO_USER_POOL_ID}
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource:
+            - arn:aws:lambda:us-east-1:058264434140:function:sendWelcomeEmail-${self:provider.stage}
+        - Effect: Allow
+          Action: 
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${env:S3_BUCKET_NAME}
+            - arn:aws:s3:::${env:S3_BUCKET_NAME}/*
+
+functions:
+  createUser:
+    handler: src/server.handler
+    events:
+      - http:
+          path: auth/signup
+          method: post
+
+  loginUser:
+    handler: src/server.handler
+    events:
+      - http:
+          path: auth/login
+          method: post
+
+  verifyUser:
+    handler: src/server.handler
+    events:
+      - http:
+          path: auth/verify
+          method: post
+
+  sendWelcomeEmail:
+    handler: src/sendWelcomeEmail.handler
+    name: sendWelcomeEmail-${self:provider.stage}
+    events: []
+
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - .git/**
+    - .vscode/**
+    - README.md
+    - package-lock.json
