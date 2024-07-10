@@ -3,6 +3,8 @@ import sgMail from '@sendgrid/mail';
 
 // const ses = new AWS.SES();
 
+const apikey = process.env.sendGridApiKey
+
 const sendGridApiKey = process.env.SENDGRID_API_KEY as string;
 sgMail.setApiKey(sendGridApiKey);
 
