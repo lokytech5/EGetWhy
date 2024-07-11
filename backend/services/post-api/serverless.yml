@@ -6,7 +6,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
-  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  stage: ${opt:stage, 'dev'} # default stage is 'devs'
   environment:
     USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
     POSTS_TABLE: ${cf:backend-${self:provider.stage}.PostsTableName}
