@@ -1,5 +1,4 @@
-
-import multer = require("multer");
+import multer from "multer"
 import { InvalidFileTypeError } from "../lib/errorUtils";
 
 const storage = multer.memoryStorage();
