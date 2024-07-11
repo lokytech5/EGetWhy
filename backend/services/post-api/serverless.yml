@@ -19,7 +19,6 @@ provider:
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
-    NEW_BUCKET_NAME: ${env:NEW_BUCKET_NAME}
 
 functions:
   createPost:
