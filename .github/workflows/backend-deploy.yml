@@ -16,7 +16,7 @@ jobs:
           - "services/auth-api"
           - "services/user-api"
           - "services/post-api"
-          # Add other services here
+          # Add other services in here
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
