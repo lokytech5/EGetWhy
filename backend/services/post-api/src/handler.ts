@@ -56,3 +56,37 @@ export const getAllPosts = async (req: Request, res: Response) => {
     
   }
 }
+
+export const addComment = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const { userId, content } = req.body;
+  const  timestamp = new Date().toISOString();
+
+  if (!userId || !content) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const params = {
+    TableName: process.env.COMMENTS_TABLE!,
+    Item: {
+      CommentID: uuidv1(),
+      PostID: postId,
+      UserID: userId,
+      Content: content,
+      CreatedAt: timestamp,
+      UpdatedAt: timestamp,
+    },
+  };
+
+  try {
+    const command = new PutCommand(params);
+    await docClient.send(command);
+    res.status(201).json(params.Item);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: `Error adding comment: ${error.message}` });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
+  }
+};

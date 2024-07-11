@@ -41,7 +41,7 @@ export const createUser = async (req: Request, res: Response) => {
   
       // Save user details in DynamoDB
       const userId = cognitoResponse.UserSub;
-      const createdAt = new Date().toISOString();
+      const timestamp = new Date().toISOString();
       const user = {
         userId,
         username,
@@ -50,8 +50,8 @@ export const createUser = async (req: Request, res: Response) => {
         profilePictureURL: '',
         bio: '',
         location: '',
-        createdAt,
-        updatedAt: createdAt,
+        createdAt: timestamp,
+        updatedAt: timestamp,
       };
   
       const dynamoParams = {
