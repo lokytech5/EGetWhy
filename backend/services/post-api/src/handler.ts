@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import { docClient } from "../../../lib/dynamoClient"; // Adjust the path according to your project structure
 import { v1 as uuidv1 } from 'uuid';
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 export const createPost = async (req: Request, res: Response) => {
   const { userID, content, hashtags, categoryID, isAnonymous } = req.body;
@@ -37,3 +37,22 @@ export const createPost = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const getAllPosts = async (req: Request, res: Response) => {
+  const params = {
+    TableName: process.env.POSTS_TABLE,
+  };
+
+  try {
+    const command = new QueryCommand(params);
+    const data = await docClient.send(command);
+    res.status(200).json(data.Items);
+  } catch (error) {
+    if(error instanceof Error){
+      res.status(500).json({error:  `Error getting posts: ${error.message}` })
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
+    
+  }
+}

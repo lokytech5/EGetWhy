@@ -37,12 +37,11 @@ custom:
 
 functions:
   createPost:
-    handler: src/handler.createPost
+    handler: src/server.handler
     events:
       - http:
           path: api/posts
           method: post
-          cors: true
 
 resources:
   Resources:

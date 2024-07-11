@@ -64,11 +64,10 @@ export const createUser = async (req: Request, res: Response) => {
   
       res.status(201).json({ message: 'User created successfully', user });
     } catch (error) {
-      console.error('Error during user registration:', error);
-      if (isAWSError(error) && error.code === 'UsernameExistsException') {
-        res.status(400).json({ error: 'User already exists' });
+      if(error instanceof Error){
+        res.status(500).json({error:  `User already exits: ${error.message}` })
       } else {
-        res.status(500).json({ error: 'Could not create user' });
+        res.status(500).json({ error: 'Unknown error occurred' });
       }
     }
   };
