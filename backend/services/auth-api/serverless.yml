@@ -6,7 +6,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'}  # Default to 'dev' if not specified
+  stage: ${opt:stage, 'dev'}  # Default to 'dev' if not specify
   environment:
     USERS_TABLE:
       'Fn::ImportValue': UsersTableName-${self:provider.stage}
