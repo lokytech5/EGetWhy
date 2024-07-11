@@ -14,7 +14,6 @@ provider:
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     S3_BUCKET_NAME: user-profile-egetwhy-pictures-${self:provider.stage}
-    NEW_BUCKET_NAME: user-profile-egetwhy-pictures-${self:provider.stage}
     STAGE: ${self:provider.stage}
 
   iam:
