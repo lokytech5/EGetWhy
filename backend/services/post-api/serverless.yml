@@ -5,8 +5,9 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs14.x
-  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
   environment:
     USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
     POSTS_TABLE: ${self:custom.projectPrefix}-posts-table-${self:provider.stage}
@@ -20,8 +21,19 @@ provider:
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
 
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+
 custom:
-  projectPrefix: egetwhy # Add your project prefix here
+  projectPrefix: egetwhy
 
 functions:
   createPost:
