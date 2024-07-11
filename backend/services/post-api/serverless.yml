@@ -1,0 +1,54 @@
+service: post-api
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'} # default stage is 'dev'
+  environment:
+    POSTS_TABLE: posts-table-${self:provider.stage}
+    CATEGORIES_TABLE: categories-table-${self:provider.stage}
+
+functions:
+  createPost:
+    handler: src/handler.createPost
+    events:
+      - http:
+          path: api/posts
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    PostsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.POSTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "PostID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "PostID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    CategoriesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "CategoryID"
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: "CategoryID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - .git/**
+    - .vscode/**
+    - README.md
+    - package-lock.json

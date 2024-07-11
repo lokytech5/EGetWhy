@@ -1,18 +1,17 @@
 {
-    "name": "user-api",
+    "name": "post-api",
     "version": "1.0.0",
-    "description": "Users API service",
+    "description": "Posts API service",
     "scripts": {
-      "build": "tsc --project tsconfig.json",
-      "deploy": "serverless deploy"
+        "build": "tsc --project tsconfig.json",
+        "deploy": "serverless deploy"
     },
     "dependencies": {
-        
+        "@types/uuid": "^10.0.0"
     },
     "devDependencies": {
-      "@types/aws-lambda": "^8.10.140",
-      "@types/express": "^4.17.21",
-      "@types/node": "^20.14.9"
+        "@types/aws-lambda": "^8.10.140",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.14.9"
     }
-  }
-  
+}
