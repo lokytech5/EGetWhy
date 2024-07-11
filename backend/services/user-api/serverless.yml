@@ -1,5 +1,8 @@
 service: user-api
 
+plugins:
+  - serverless-export-env
+
 provider:
   name: aws
   runtime: nodejs20.x

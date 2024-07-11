@@ -1,12 +1,25 @@
 service: post-api
 
+plugins:
+  - serverless-export-env
+
 provider:
   name: aws
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
-    POSTS_TABLE: posts-table-${self:provider.stage}
-    CATEGORIES_TABLE: categories-table-${self:provider.stage}
+    USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
+    POSTS_TABLE: ${cf:backend-${self:provider.stage}.PostsTableName}
+    CATEGORIES_TABLE: ${cf:backend-${self:provider.stage}.CategoriesTableName}
+    COMMENTS_TABLE: ${cf:backend-${self:provider.stage}.CommentsTableName}
+    LIKES_TABLE: ${cf:backend-${self:provider.stage}.LikesTableName}
+    HASHTAGS_TABLE: ${cf:backend-${self:provider.stage}.HashtagsTableName}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    NEW_BUCKET_NAME: ${env:NEW_BUCKET_NAME}
 
 functions:
   createPost:
@@ -42,7 +55,6 @@ resources:
           - AttributeName: "CategoryID"
             KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST
-
 
 package:
   individually: true

@@ -3,16 +3,13 @@
     "version": "1.0.0",
     "description": "Users API service",
     "scripts": {
-      "build": "tsc --project tsconfig.json",
-      "deploy": "serverless deploy"
-    },
-    "dependencies": {
-        
+        "build": "tsc --project tsconfig.json",
+        "deploy": "serverless deploy"
     },
     "devDependencies": {
-      "@types/aws-lambda": "^8.10.140",
-      "@types/express": "^4.17.21",
-      "@types/node": "^20.14.9"
+        "@types/aws-lambda": "^8.10.140",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.14.9",
+        "serverless-export-env": "github:arabold/serverless-export-env"
     }
-  }
-  
+}

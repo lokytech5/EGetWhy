@@ -10,7 +10,12 @@ provider:
   runtime: nodejs20.x
   stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
-    USERS_TABLE: ${self:custom.tableName}
+    USERS_TABLE: ${self:custom.usersTableName}
+    POSTS_TABLE: ${self:custom.postsTableName}
+    CATEGORIES_TABLE: ${self:custom.categoriesTableName}
+    COMMENTS_TABLE: ${self:custom.commentsTableName}
+    LIKES_TABLE: ${self:custom.likesTableName}
+    HASHTAGS_TABLE: ${self:custom.hashtagsTableName}
     STAGE: ${self:provider.stage}
     S3_BUCKET_NAME: ${self:custom.bucketName}
 
@@ -27,6 +32,11 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
+            - Fn::GetAtt: [PostsTable, Arn]
+            - Fn::GetAtt: [CategoriesTable, Arn]
+            - Fn::GetAtt: [CommentsTable, Arn]
+            - Fn::GetAtt: [LikesTable, Arn]
+            - Fn::GetAtt: [HashtagsTable, Arn]
 
 functions:
   api:
@@ -46,7 +56,67 @@ resources:
           - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableName}
+        TableName: ${self:custom.usersTableName}
+
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: postID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: postID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.postsTableName}
+
+    CategoriesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: categoryID
+            AttributeType: N
+        KeySchema:
+          - AttributeName: categoryID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.categoriesTableName}
+
+    CommentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: commentID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: commentID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.commentsTableName}
+
+    LikesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: likeID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: likeID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.likesTableName}
+
+    HashtagsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: hashtag
+            AttributeType: S
+        KeySchema:
+          - AttributeName: hashtag
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.hashtagsTableName}
 
   Outputs:
     UsersTableArn:
@@ -55,12 +125,67 @@ resources:
       Export:
         Name: UsersTableArn-${self:provider.stage}
     UsersTableName:
-      Value: ${self:custom.tableName}
+      Value: ${self:custom.usersTableName}
       Export:
         Name: UsersTableName-${self:provider.stage}
 
+    PostsTableArn:
+      Value:
+        Fn::GetAtt: [PostsTable, Arn]
+      Export:
+        Name: PostsTableArn-${self:provider.stage}
+    PostsTableName:
+      Value: ${self:custom.postsTableName}
+      Export:
+        Name: PostsTableName-${self:provider.stage}
+
+    CategoriesTableArn:
+      Value:
+        Fn::GetAtt: [CategoriesTable, Arn]
+      Export:
+        Name: CategoriesTableArn-${self:provider.stage}
+    CategoriesTableName:
+      Value: ${self:custom.categoriesTableName}
+      Export:
+        Name: CategoriesTableName-${self:provider.stage}
+
+    CommentsTableArn:
+      Value:
+        Fn::GetAtt: [CommentsTable, Arn]
+      Export:
+        Name: CommentsTableArn-${self:provider.stage}
+    CommentsTableName:
+      Value: ${self:custom.commentsTableName}
+      Export:
+        Name: CommentsTableName-${self:provider.stage}
+
+    LikesTableArn:
+      Value:
+        Fn::GetAtt: [LikesTable, Arn]
+      Export:
+        Name: LikesTableArn-${self:provider.stage}
+    LikesTableName:
+      Value: ${self:custom.likesTableName}
+      Export:
+        Name: LikesTableName-${self:provider.stage}
+
+    HashtagsTableArn:
+      Value:
+        Fn::GetAtt: [HashtagsTable, Arn]
+      Export:
+        Name: HashtagsTableArn-${self:provider.stage}
+    HashtagsTableName:
+      Value: ${self:custom.hashtagsTableName}
+      Export:
+        Name: HashtagsTableName-${self:provider.stage}
+
 custom:
-  tableName: "users-table-${self:provider.stage}"
+  usersTableName: "users-table-${self:provider.stage}"
+  postsTableName: "posts-table-${self:provider.stage}"
+  categoriesTableName: "categories-table-${self:provider.stage}"
+  commentsTableName: "comments-table-${self:provider.stage}"
+  likesTableName: "likes-table-${self:provider.stage}"
+  hashtagsTableName: "hashtags-table-${self:provider.stage}"
   bucketName: "egetwhy-bucket-${self:provider.stage}"
   export-env:
     filename: .env
