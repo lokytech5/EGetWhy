@@ -6,19 +6,22 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
-  stage: ${opt:stage, 'dev'} # default stage is 'devs'
+  stage: ${opt:stage, 'dev'} # default stage is 'dev'
   environment:
     USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
-    POSTS_TABLE: ${cf:backend-${self:provider.stage}.PostsTableName}
-    CATEGORIES_TABLE: ${cf:backend-${self:provider.stage}.CategoriesTableName}
-    COMMENTS_TABLE: ${cf:backend-${self:provider.stage}.CommentsTableName}
-    LIKES_TABLE: ${cf:backend-${self:provider.stage}.LikesTableName}
-    HASHTAGS_TABLE: ${cf:backend-${self:provider.stage}.HashtagsTableName}
+    POSTS_TABLE: ${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+    CATEGORIES_TABLE: ${self:custom.projectPrefix}-categories-table-${self:provider.stage}
+    COMMENTS_TABLE: ${self:custom.projectPrefix}-comments-table-${self:provider.stage}
+    LIKES_TABLE: ${self:custom.projectPrefix}-likes-table-${self:provider.stage}
+    HASHTAGS_TABLE: ${self:custom.projectPrefix}-hashtags-table-${self:provider.stage}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+
+custom:
+  projectPrefix: egetwhy # Add your project prefix here
 
 functions:
   createPost:
