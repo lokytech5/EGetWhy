@@ -1,36 +1,25 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import {Request, Response} from "express";
 import { docClient } from "../../../lib/dynamoClient"; // Adjust the path according to your project structure
 import { v1 as uuidv1 } from 'uuid';
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
-export const createPost = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // Check if event.body is null or undefined
-  if (!event.body) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Missing request body' }),
-    };
-  }
-
-  const data = JSON.parse(event.body);
+export const createPost = async (req: Request, res: Response) => {
+  const { userID, content, hashtags, categoryID, isAnonymous } = req.body;
   const timestamp = new Date().toISOString();
 
-  if (!data.userID || !data.content) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Missing required fields' }),
-    };
+  if (!userID || !content) {
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
   const params = {
-    TableName: process.env.POSTS_TABLE,
+    TableName: process.env.POSTS_TABLE!,
     Item: {
       PostID: uuidv1(),
-      UserID: data.userID,
-      Content: data.content,
-      Hashtags: data.hashtags || [],
-      CategoryID: data.categoryID || null,
-      IsAnonymous: data.isAnonymous || false,
+      UserID: userID,
+      Content: content,
+      Hashtags: hashtags || [],
+      CategoryID: categoryID || null,
+      IsAnonymous: isAnonymous || false,
       CreatedAt: timestamp,
       UpdatedAt: timestamp,
     },
@@ -39,20 +28,12 @@ export const createPost = async (event: APIGatewayProxyEvent): Promise<APIGatewa
   try {
     const command = new PutCommand(params);
     await docClient.send(command);
-    return {
-      statusCode: 201,
-      body: JSON.stringify(params.Item),
-    };
+    res.status(201).json(params.Item);
   } catch (error) {
     if (error instanceof Error) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: `Error creating post: ${error.message}` }),
-      };
+      res.status(500).json({ error: `Error creating post: ${error.message}` });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
     }
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Unknown error occurred' }),
-    };
   }
 };
