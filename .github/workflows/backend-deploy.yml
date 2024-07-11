@@ -12,9 +12,9 @@ jobs:
     strategy:
       matrix:
         service:
-          - backend
-          - services/auth-api
-          - services/user-api
+          - "."
+          - "services/auth-api"
+          - "services/user-api"
           # Add other services here
     steps:
       - name: Checkout code
