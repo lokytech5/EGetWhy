@@ -10,8 +10,8 @@ provider:
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
-    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
-    NEW_BUCKET_NAME: ${env:NEW_BUCKET_NAME}
+    S3_BUCKET_NAME: user-profile-egetwhy-pictures-${self:provider.stage}
+    NEW_BUCKET_NAME: user-profile-egetwhy-pictures-${self:provider.stage}
     STAGE: ${self:provider.stage}
 
   iam:
@@ -33,10 +33,8 @@ provider:
             - s3:GetObject
             - s3:ListBucket
           Resource: 
-            - arn:aws:s3:::${env:S3_BUCKET_NAME}
-            - arn:aws:s3:::${env:S3_BUCKET_NAME}/*
-            - arn:aws:s3:::${env:NEW_BUCKET_NAME}
-            - arn:aws:s3:::${env:NEW_BUCKET_NAME}/*
+            - arn:aws:s3:::user-profile-egetwhy-pictures-${self:provider.stage}
+            - arn:aws:s3:::user-profile-egetwhy-pictures-${self:provider.stage}/*
 
 functions:
   getUserById:
@@ -52,6 +50,14 @@ functions:
       - http:
           path: users/upload-profile-picture
           method: post
+
+resources:
+  Resources:
+    ProfilePicturesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName:
+           Fn::Sub: user-profile-egetwhy-pictures-${self:provider.stage}
 
 package:
   individually: true
