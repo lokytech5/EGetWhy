@@ -3,7 +3,7 @@ app: egetwhy-app
 service: backend
 
 plugins:
-  - serverless-dotenv-plugin
+  - serverless-export-env
 
 provider:
   name: aws
@@ -62,6 +62,10 @@ resources:
 custom:
   tableName: "users-table-${self:provider.stage}"
   bucketName: "egetwhy-bucket-${self:provider.stage}"
+  export-env:
+    filename: .env
+    overwrite: true
+    enableOffline: true
 
 package:
   exclude:

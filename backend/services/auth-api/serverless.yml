@@ -1,5 +1,8 @@
 service: auth-api
 
+plugins:
+  - serverless-export-env
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -78,6 +81,12 @@ functions:
     handler: src/sendWelcomeEmail.handler
     name: sendWelcomeEmail-${self:provider.stage}
     events: []
+
+custom:
+  export-env:
+    filename: .env
+    overwrite: true
+    enableOffline: true
 
 package:
   individually: true
