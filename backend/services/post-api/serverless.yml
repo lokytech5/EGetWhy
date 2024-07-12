@@ -11,6 +11,7 @@ provider:
   environment:
     USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
     POSTS_TABLE: ${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+    POSTHASHTAGS_TABLE: ${self:custom.projectPrefix}-posthashtags-table-${self:provider.stage}
     CATEGORIES_TABLE: ${self:custom.projectPrefix}-categories-table-${self:provider.stage}
     COMMENTS_TABLE: ${self:custom.projectPrefix}-comments-table-${self:provider.stage}
     LIKES_TABLE: ${self:custom.projectPrefix}-likes-table-${self:provider.stage}
@@ -21,20 +22,24 @@ provider:
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
 
+
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
             - dynamodb:PutItem
+            - dynamodb:BatchWriteItem
             - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:GetItem
           Resource: 
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:index/HashtagsIndex
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-comments-table-${self:provider.stage}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-categories-table-${self:provider.stage}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-likes-table-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posthashtags-table-${self:provider.stage}
 
 custom:
   projectPrefix: egetwhy
@@ -54,11 +59,25 @@ functions:
           path: api/feed
           method: get
 
+  getPostByHashtag:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/hashtags/{hashtag}/posts
+          method: get
+
   addComment:
     handler: src/server.handler
     events:
       - http:
           path: api/posts/{postId}/comments
+          method: post
+
+  likePost:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/{postId}/like
           method: post
 
 resources:
@@ -70,9 +89,18 @@ resources:
         AttributeDefinitions:
           - AttributeName: "PostID"
             AttributeType: "S"
+          - AttributeName: "Hashtags"
+            AttributeType: "S"
         KeySchema:
           - AttributeName: "PostID"
             KeyType: "HASH"
+        GlobalSecondaryIndexes:
+          - IndexName: "HashtagsIndex"
+            KeySchema:
+              - AttributeName: "Hashtags"
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: "ALL"
         BillingMode: PAY_PER_REQUEST
 
     CategoriesTable:
@@ -85,6 +113,22 @@ resources:
         KeySchema:
           - AttributeName: "CategoryID"
             KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    PostHashtagsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.POSTHASHTAGS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "Hashtag"
+            AttributeType: "S"
+          - AttributeName: "PostID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "Hashtag"
+            KeyType: "HASH"
+          - AttributeName: "PostID"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
 
     CommentsTable:

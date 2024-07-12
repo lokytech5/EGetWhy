@@ -12,6 +12,7 @@ provider:
   environment:
     USERS_TABLE: ${self:custom.usersTableName}
     POSTS_TABLE: ${self:custom.postsTableName}
+    POSTHASHTAGS_TABLE: ${self:custom.postHashtagsTableName}
     CATEGORIES_TABLE: ${self:custom.categoriesTableName}
     COMMENTS_TABLE: ${self:custom.commentsTableName}
     LIKES_TABLE: ${self:custom.likesTableName}
@@ -33,6 +34,7 @@ provider:
           Resource:
             - Fn::GetAtt: [UsersTable, Arn]
             - Fn::GetAtt: [PostsTable, Arn]
+            - Fn::GetAtt: [PostHashtagsTable, Arn]
             - Fn::GetAtt: [CategoriesTable, Arn]
             - Fn::GetAtt: [CommentsTable, Arn]
             - Fn::GetAtt: [LikesTable, Arn]
@@ -69,6 +71,22 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.postsTableName}
+
+    PostHashtagsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: Hashtag
+            AttributeType: S
+          - AttributeName: PostID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Hashtag
+            KeyType: HASH
+          - AttributeName: PostID
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.postHashtagsTableName}
 
     CategoriesTable:
       Type: AWS::DynamoDB::Table
@@ -139,6 +157,16 @@ resources:
       Export:
         Name: PostsTableName-${self:provider.stage}
 
+    PostHashtagsTableArn:
+      Value:
+        Fn::GetAtt: [PostHashtagsTable, Arn]
+      Export:
+        Name: PostHashtagsTableArn-${self:provider.stage}
+    PostHashtagsTableName:
+      Value: ${self:custom.postHashtagsTableName}
+      Export:
+        Name: PostHashtagsTableName-${self:provider.stage}
+
     CategoriesTableArn:
       Value:
         Fn::GetAtt: [CategoriesTable, Arn]
@@ -182,6 +210,7 @@ resources:
 custom:
   usersTableName: "users-table-${self:provider.stage}"
   postsTableName: "posts-table-${self:provider.stage}"
+  postHashtagsTableName: "posthashtags-table-${self:provider.stage}"
   categoriesTableName: "categories-table-${self:provider.stage}"
   commentsTableName: "comments-table-${self:provider.stage}"
   likesTableName: "likes-table-${self:provider.stage}"
