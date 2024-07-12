@@ -1,4 +1,4 @@
-export const createResponse = (data: any, meta: any = {}) => ({
+export const buildResponse = (data: any, meta: any = {}) => ({
     data,
     meta,
   });

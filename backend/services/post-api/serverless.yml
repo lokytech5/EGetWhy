@@ -30,7 +30,11 @@ provider:
             - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:GetItem
-          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+          Resource: 
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posts-table-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-comments-table-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-categories-table-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-likes-table-${self:provider.stage}
 
 custom:
   projectPrefix: egetwhy
@@ -41,6 +45,20 @@ functions:
     events:
       - http:
           path: api/posts
+          method: post
+
+  getAllPosts:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/feed
+          method: get
+
+  addComment:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/{postId}/comments
           method: post
 
 resources:
@@ -68,6 +86,31 @@ resources:
           - AttributeName: "CategoryID"
             KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST
+
+    CommentsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.COMMENTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "CommentID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "CommentID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    LikesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.LIKES_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "LikeID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "LikeID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
 
 package:
   individually: true
