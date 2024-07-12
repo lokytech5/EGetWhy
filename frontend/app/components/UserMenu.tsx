@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from "next/image";
+import Link from 'next/link';
 
 
 const UserMenu = () => {
@@ -25,9 +26,9 @@ const UserMenu = () => {
       className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
     >
       <li>
-        <a href="#" className="justify-between">
+        <Link href="#" className="justify-between">
           Profile
-        </a>
+        </Link>
       </li>
     </ul>
   </div>
