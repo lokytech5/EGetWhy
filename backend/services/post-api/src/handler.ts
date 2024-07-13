@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import { docClient } from "../../../lib/dynamoClient"; // Adjust the path according to your project structure
+import { docClient } from "../../../lib/dynamoClient";
 import { v1 as uuidv1 } from 'uuid';
 import { BatchGetCommand, BatchWriteCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { buildResponse } from "../../../lib/responseUtils";
@@ -84,10 +84,21 @@ export const getAllPosts = async (req: Request, res: Response) => {
 };
 
 export const getPostByHashtag = async (req: Request, res: Response) => {
-  const { hashtag } = req.params;
+  let { hashtag } = req.params;
+
+  if (!hashtag.startsWith('#')) {
+    hashtag = `#${hashtag}`;
+  }
+
+  const POSTHASHTAGS_TABLE = process.env.POSTHASHTAGS_TABLE;
+  const POSTS_TABLE = process.env.POSTS_TABLE;
+
+  if (!POSTHASHTAGS_TABLE || !POSTS_TABLE) {
+    return res.status(500).json({ data: null, meta: { error: "Environment variables not set correctly" } });
+  }
 
   const params = {
-    TableName: process.env.POSTHASHTAGS_TABLE!,
+    TableName: POSTHASHTAGS_TABLE,
     KeyConditionExpression: 'Hashtag = :hashtag',
     ExpressionAttributeValues: {
       ':hashtag': hashtag,
@@ -104,25 +115,24 @@ export const getPostByHashtag = async (req: Request, res: Response) => {
       const keys = postIds.map(postId => ({ PostID: postId }));
       const postsParams = {
         RequestItems: {
-          [process.env.POSTS_TABLE!]: {
+          [POSTS_TABLE]: {
             Keys: keys,
           },
         },
       };
       const postsCommand = new BatchGetCommand(postsParams);
       const postsData = await docClient.send(postsCommand);
-      res.status(200).json(buildResponse(postsData.Responses?.[process.env.POSTS_TABLE!] || []));
+
+      res.status(200).json({ data: postsData.Responses?.[POSTS_TABLE] || [], meta: {} });
     } else {
-      res.status(200).json(buildResponse([]));
+      res.status(200).json(buildResponse([], { message: "No posts found for the given hashtag." }));
     }
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json(buildResponse(null, { error: `Error getting posts by hashtag: ${error.message}` }));
-    } else {
-      res.status(500).json(buildResponse(null, { error: 'Unknown error occurred' }));
-    }
+    console.error("Error getting posts by hashtag:", error);
+    res.status(500).json(buildResponse(null, { error: 'Unknown error occurred' }));
   }
 };
+
 
 
 export const addComment = async (req: Request, res: Response) => {

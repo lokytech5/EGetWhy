@@ -65,7 +65,6 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Usermenu (Alert Section) */}
       <div className="navbar-end">
         <div className="dropdown dropdown-end">
           <button className="btn btn-ghost btn-circle">
