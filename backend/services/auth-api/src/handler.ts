@@ -1,10 +1,11 @@
 import { getSecretHash } from "../../../lib/cognitoUtils";
 import { docClient } from "../../../lib/dynamoClient";
 import { isAWSError } from "../../../lib/errorUtils";
-import { PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import AWS, { S3 } from "aws-sdk";
 import { Request, Response } from "express";
 import { buildResponse } from "../../../lib/responseUtils";
+import notifyPasswordReset from "./notifyPasswordReset";
 
 
 
@@ -161,7 +162,6 @@ export const createUser = async (req: Request, res: Response) => {
         const command = new GetCommand(params);
         const { Item } = await docClient.send(command);
   
-      // Using SendGird to sendWelcomeEmail Lambda function within the lambda function
         if (Item) {
           const lambdaParams = {
             FunctionName: `sendWelcomeEmail-${process.env.STAGE}`,
@@ -190,60 +190,86 @@ export const createUser = async (req: Request, res: Response) => {
 
 
 export const generatePasswordResetCode = async (req: Request, res: Response) => {
-  const { email } = req.body;
-
-  if(!email) {
-    return res.status(400).json(buildResponse({ error: 'Missing required fields' }));
-  }
-
-  const cognitoParams = {
-    ClientId: process.env.COGNITO_CLIENT_ID!,
-    SecretHash: getSecretHash(email),
-    Username: email,
-  };
-
-  try {
-    await cognito.forgotPassword(cognitoParams).promise();
-
-    const dynamoParams = {
-      TableName: process.env.RESET_CODES_TABLE!,
-      Item: {
-        email,
-        createdAt: new Date().toISOString(),
-      },
+    const { email } = req.body;
+  
+    if (!email) {
+      return res.status(400).json(buildResponse({ error: 'Missing required fields' }));
+    }
+  
+    const cognitoParams = {
+      ClientId: process.env.COGNITO_CLIENT_ID!,
+      SecretHash: getSecretHash(email),
+      Username: email,
     };
-
-    const putCommand = new PutCommand(dynamoParams);
-    await docClient.send(putCommand);
-
-    res.status(200).json(buildResponse({ message: 'Password reset code sent to email' }));
-  } catch (error) {
-    console.error('Error generating password reset code:', error);
-    res.status(500).json(buildResponse({ error: 'Could not generate password reset code' }));
-  }
-};
-
-
-export const resetPassword = async (req: Request, res: Response) => {
-  const { email, code, newPassword } = req.body;
-
-  if (!code || !newPassword) {
-    return res.status(400).json(buildResponse({ error: 'Missing required fields' }));
-  }
-
-  const cognitoParams = {
-    ClientId: process.env.COGNITO_CLIENT_ID!,
-    SecretHash: getSecretHash(email),
-    Username: email,
-    ConfirmationCode: code,
-    Password: newPassword,
+  
+    try {
+      await cognito.forgotPassword(cognitoParams).promise();
+  
+      const dynamoParams = {
+        TableName: process.env.RESET_CODES_TABLE!,
+        Item: {
+          email, // primary key
+          createdAt: new Date().toISOString(),
+        },
+      };
+  
+      const putCommand = new PutCommand(dynamoParams);
+      await docClient.send(putCommand);
+  
+      res.status(200).json(buildResponse({ message: 'Password reset code sent to email' }));
+    } catch (error) {
+      console.error('Error generating password reset code:', error);
+      res.status(500).json(buildResponse({ error: 'Could not generate password reset code' }));
+    }
   };
 
-  try {
-    await cognito.confirmForgotPassword(cognitoParams).promise();
-    res.status(200).json(buildResponse({ message: 'Password has been reset successfully' }));
+
+  export const resetPassword = async (req: Request, res: Response) => {
+    const { email, code, newPassword } = req.body;
+  
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+  
+    const queryParams = {
+      TableName: process.env.RESET_CODES_TABLE!,
+      Key: { email: email },
+    };
+  
+    try {
+      const getCommand = new GetCommand(queryParams);
+      const { Item } = await docClient.send(getCommand);
+  
+      if (!Item) {
+        return res.status(404).json({ error: 'Invalid or expired reset request' });
+      }
+  
+      const cognitoParams = {
+        ClientId: process.env.COGNITO_CLIENT_ID!,
+        SecretHash: getSecretHash(email),
+        Username: email,
+        ConfirmationCode: code,
+        Password: newPassword,
+      };
+  
+      await cognito.confirmForgotPassword(cognitoParams).promise();
+
+      await notifyPasswordReset(email);
+
+    res.status(200).json(buildResponse({ message: 'Password reset successfully' }));
   } catch (error) {
-    console.error('Error resetting password:', error);
-    res.status(500).json({ error: 'Could not reset password' });
+    console.error('Error during password reset:', error);
+
+    if (error instanceof Error) {
+      if (error.name === 'CodeMismatchException') {
+        res.status(400).json({ error: 'Invalid or expired code' });
+      } else if (error.name === 'UserNotFoundException') {
+        res.status(404).json({ error: 'User not found' });
+      } else {
+        res.status(500).json({ error: `Could not reset password: ${error.message}` });
+      }
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };

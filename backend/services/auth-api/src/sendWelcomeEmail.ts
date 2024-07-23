@@ -14,5 +14,6 @@ export const handler = async (event: any) => {
     await sendEmail(emailParams);
   } catch (error) {
     console.error("Error sending welcome email:", error);
+    throw error;
   }
 };
