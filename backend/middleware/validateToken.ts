@@ -11,15 +11,13 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
-    console.log('No token provided');
     return res.status(401).json({ error: "Access token missing" });
   }
 
   try {
     const payload = await verifier.verify(token);
-    console.log('Token payload:', payload); // Detailed logging
     req.user = payload.sub as string;
-    console.log('Set req.user:', req.user); // Confirming req.user is set
+
     next();
   } catch (err) {
     console.error('Token verification error:', err);

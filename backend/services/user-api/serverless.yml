@@ -58,7 +58,7 @@ functions:
     handler: src/server.handler
     events:
       - http:
-          path: users/profile
+          path: me
           method: get
           
 resources:

@@ -9,8 +9,8 @@ const app = express();
 app.use(express.json());
 
 app.get("/users/:userId", validateToken, getUserById);
+app.get("/me", validateToken, getUserProfile);
 app.post("/users/upload-profile-picture", validateToken, fileUpload.single('file'), uploadProfilePicture);
-app.get("/users/profile", validateToken, getUserProfile);
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });

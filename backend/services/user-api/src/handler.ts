@@ -37,44 +37,28 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const getUserProfile = async (req: Request, res: Response) => {
-  console.log('Request headers:', req.headers);
-  console.log('Request params:', req.params);
-  console.log('Request body:', req.body);
-  console.log('Environment variables:', process.env);
+  const userId = req.user;
 
-  const userId = req.user as string;
-  console.log('User ID extracted:', userId);
-
-  if (!userId) {
-    console.error('User ID is missing');
-    return res.status(400).json({ error: 'User ID is missing' });
-  }
+  const params = {
+    TableName: USERS_TABLE,
+    Key: { userId },
+  };
 
   try {
-    const params = {
-      TableName: process.env.USERS_TABLE,
-      Key: { userId },
-    };
-
-    console.log('DynamoDB Params:', params);
-
     const command = new GetCommand(params);
     const { Item } = await docClient.send(command);
 
-    console.log('DynamoDB response Item:', Item);
-
-    if (!Item) {
-      console.error('User not found:', userId);
-      return res.status(404).json({ error: 'User not found' });
+    if (Item) {
+      res.json(buildResponse(Item));
+    } else {
+      console.error(`Could not find user with userId: ${userId}`);
+      res.status(404).json(buildResponse({ error: `Could not find user with userId: ${userId}` }));
     }
-
-    res.status(200).json({ user: Item });
   } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).json({ error: 'Could not fetch user profile' });
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: "Could not retrieve user" });
   }
 };
-
 
 export const uploadProfilePicture = async (req: Request, res: Response) => {
     const { userId } = req.body;
