@@ -4,6 +4,7 @@ import { isAWSError } from "../../../lib/errorUtils";
 import { PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import AWS, { S3 } from "aws-sdk";
 import { Request, Response } from "express";
+import { buildResponse } from "../../../lib/responseUtils";
 
 
 
@@ -74,6 +75,7 @@ export const createUser = async (req: Request, res: Response) => {
   
   
   export const loginUser = async (req: Request, res: Response) => {
+    // This is a minor change to force a new Lambda version
     const { email, password } = req.body;
   
     if (!email || !password) {
@@ -176,12 +178,72 @@ export const createUser = async (req: Request, res: Response) => {
           });
         }
   
-        res.status(200).json({ message: 'User verified successfully' });
+        res.status(200).json(buildResponse({ message: 'User verified successfully' }));
       } else {
-        res.status(500).json({ error: 'User verification failed' });
+        res.status(500).json(buildResponse({ error: 'User verification failed' }));
       }
     } catch (error) {
       console.error('Error during user verification:', error);
-      res.status(500).json({ error: 'Could not verify user' });
+      res.status(500).json(buildResponse({ error: 'Could not verify user' }));
     }
   };
+
+
+export const generatePasswordResetCode = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if(!email) {
+    return res.status(400).json(buildResponse({ error: 'Missing required fields' }));
+  }
+
+  const cognitoParams = {
+    ClientId: process.env.COGNITO_CLIENT_ID!,
+    SecretHash: getSecretHash(email),
+    Username: email,
+  };
+
+  try {
+    await cognito.forgotPassword(cognitoParams).promise();
+
+    const dynamoParams = {
+      TableName: process.env.RESET_CODES_TABLE!,
+      Item: {
+        email,
+        createdAt: new Date().toISOString(),
+      },
+    };
+
+    const putCommand = new PutCommand(dynamoParams);
+    await docClient.send(putCommand);
+
+    res.status(200).json(buildResponse({ message: 'Password reset code sent to email' }));
+  } catch (error) {
+    console.error('Error generating password reset code:', error);
+    res.status(500).json(buildResponse({ error: 'Could not generate password reset code' }));
+  }
+};
+
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { email, code, newPassword } = req.body;
+
+  if (!code || !newPassword) {
+    return res.status(400).json(buildResponse({ error: 'Missing required fields' }));
+  }
+
+  const cognitoParams = {
+    ClientId: process.env.COGNITO_CLIENT_ID!,
+    SecretHash: getSecretHash(email),
+    Username: email,
+    ConfirmationCode: code,
+    Password: newPassword,
+  };
+
+  try {
+    await cognito.confirmForgotPassword(cognitoParams).promise();
+    res.status(200).json(buildResponse({ message: 'Password has been reset successfully' }));
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Could not reset password' });
+  }
+};

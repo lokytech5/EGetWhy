@@ -10,6 +10,8 @@ provider:
   environment:
     USERS_TABLE:
       'Fn::ImportValue': UsersTableName-${self:provider.stage}
+    RESET_CODES_TABLE:
+      'Fn::ImportValue': ResetCodesTableName-${self:provider.stage}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
@@ -29,7 +31,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+            - 'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+            - 'Fn::ImportValue': ResetCodesTableArn-${self:provider.stage}
         - Effect: Allow
           Action:
             - cognito-idp:AdminCreateUser
@@ -75,6 +78,20 @@ functions:
     events:
       - http:
           path: auth/verify
+          method: post
+
+  generatePasswordResetCode:
+    handler: src/server.handler
+    events:
+      - http:
+          path: auth/reset-password-code
+          method: post
+
+  resetPassword:
+    handler: src/server.handler
+    events:
+      - http:
+          path: auth/reset-password
           method: post
 
   sendWelcomeEmail:

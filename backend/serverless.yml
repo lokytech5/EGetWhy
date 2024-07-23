@@ -17,6 +17,7 @@ provider:
     COMMENTS_TABLE: ${self:custom.commentsTableName}
     LIKES_TABLE: ${self:custom.likesTableName}
     HASHTAGS_TABLE: ${self:custom.hashtagsTableName}
+    RESET_CODES_TABLE: ${self:custom.resetCodesTableName}
     STAGE: ${self:provider.stage}
     S3_BUCKET_NAME: ${self:custom.bucketName}
 
@@ -39,6 +40,7 @@ provider:
             - Fn::GetAtt: [CommentsTable, Arn]
             - Fn::GetAtt: [LikesTable, Arn]
             - Fn::GetAtt: [HashtagsTable, Arn]
+            - Fn::GetAtt: [ResetCodesTable, Arn]
 
 functions:
   api:
@@ -136,6 +138,18 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.hashtagsTableName}
 
+    ResetCodesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: code
+            AttributeType: S
+        KeySchema:
+          - AttributeName: code
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.resetCodesTableName}
+
   Outputs:
     UsersTableArn:
       Value:
@@ -207,6 +221,16 @@ resources:
       Export:
         Name: HashtagsTableName-${self:provider.stage}
 
+    ResetCodesTableArn:
+      Value:
+        Fn::GetAtt: [ResetCodesTable, Arn]
+      Export:
+        Name: ResetCodesTableArn-${self:provider.stage}
+    ResetCodesTableName:
+      Value: ${self:custom.resetCodesTableName}
+      Export:
+        Name: ResetCodesTableName-${self:provider.stage}
+
 custom:
   usersTableName: "users-table-${self:provider.stage}"
   postsTableName: "posts-table-${self:provider.stage}"
@@ -215,6 +239,7 @@ custom:
   commentsTableName: "comments-table-${self:provider.stage}"
   likesTableName: "likes-table-${self:provider.stage}"
   hashtagsTableName: "hashtags-table-${self:provider.stage}"
+  resetCodesTableName: "reset-codes-table-${self:provider.stage}"
   bucketName: "egetwhy-bucket-${self:provider.stage}"
   export-env:
     filename: .env
