@@ -67,6 +67,13 @@ functions:
           path: api/hashtags/{hashtag}/posts
           method: get
 
+  getPostById:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/{postId}
+          method: get
+
   addComment:
     handler: src/server.handler
     events:

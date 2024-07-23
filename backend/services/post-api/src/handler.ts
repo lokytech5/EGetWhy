@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import { docClient } from "../../../lib/dynamoClient";
 import { v1 as uuidv1 } from 'uuid';
-import { BatchGetCommand, BatchWriteCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { BatchGetCommand, BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { buildResponse } from "../../../lib/responseUtils";
 
 export const createPost = async (req: Request, res: Response) => {
@@ -77,6 +77,33 @@ export const getAllPosts = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json(buildResponse(null, { error: `Error getting posts: ${error.message}` }));
+    } else {
+      res.status(500).json(buildResponse(null, { error: 'Unknown error occurred' }));
+    }
+  }
+};
+
+export const getPostById = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+
+  const params = {
+    TableName: process.env.POSTS_TABLE!,
+    Key: {
+      PostID: postId
+    }
+  };
+
+  try {
+    const command = new GetCommand(params);
+    const data = await docClient.send(command);
+    if (data.Item) {
+      res.status(200).json(buildResponse(data.Item));
+    } else {
+      res.status(404).json(buildResponse(null, { error: "Post not found" }));
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json(buildResponse(null, { error: `Error getting post: ${error.message}` }));
     } else {
       res.status(500).json(buildResponse(null, { error: 'Unknown error occurred' }));
     }
