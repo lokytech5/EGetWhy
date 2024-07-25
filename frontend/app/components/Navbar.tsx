@@ -37,9 +37,6 @@ const Navbar = () => {
             <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex flex-col justify-center items-center space-y-4 no-underline">
               {/* Sidebar content here */}
               <li>
-                <a href="/login">Login</a>
-              </li>
-              <li>
                 <a href="/">Home</a>
               </li>
               <li>
@@ -47,6 +44,12 @@ const Navbar = () => {
               </li>
               <li>
                 <a href="/about">About</a>
+              </li>
+              <li>
+                <a href="/login">Login</a>
+              </li>
+              <li>
+                <a href="/register">Register</a>
               </li>
             </ul>
           </div>
@@ -57,9 +60,6 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a href="/login">Login</a>
-          </li>
-          <li>
             <a href="/">Home</a>
           </li>
           <li>
@@ -67,6 +67,12 @@ const Navbar = () => {
           </li>
           <li>
             <a href="/about">About</a>
+          </li>
+          <li>
+            <a href="/login">Login</a>
+          </li>
+          <li>
+            <a href="/register">Register</a>
           </li>
         </ul>
       </div>
