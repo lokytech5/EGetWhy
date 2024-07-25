@@ -44,7 +44,7 @@ export default function Home() {
             Become a part of our supportive network. Share your story, find support, and connect with others.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="btn btn-outline btn-primary">Sign Up Now</button>
+            <a href="/register" className="btn bg-green-600 hover:bg-base-300 hover:border-green-600 hover:text-green-600 ">Register Now</a>
           </div>
         </div>
       </section>
