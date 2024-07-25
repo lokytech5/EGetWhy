@@ -45,6 +45,12 @@ const Navbar = () => {
               <li>
                 <a href="/about">About</a>
               </li>
+              <li>
+                <a href="/login">Login</a>
+              </li>
+              <li>
+                <a href="/register">Register</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -61,6 +67,12 @@ const Navbar = () => {
           </li>
           <li>
             <a href="/about">About</a>
+          </li>
+          <li>
+            <a href="/login">Login</a>
+          </li>
+          <li>
+            <a href="/register">Register</a>
           </li>
         </ul>
       </div>
@@ -87,7 +99,7 @@ const Navbar = () => {
             </div>
           </button>
         </div>
-        <UserMenu/>
+        <UserMenu />
       </div>
     </div>
   );
