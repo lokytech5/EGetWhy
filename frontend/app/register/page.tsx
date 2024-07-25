@@ -99,7 +99,7 @@ const register = () => {
                     <Image
                         className="object-cover justify-center"
                         fill={true}
-                        src="/nigeria-register.webp"
+                        src="/images/nigeria-register.webp"
                         alt="bg-image"
                     />
                 </div>

@@ -75,7 +75,7 @@ const login = () => {
                     <Image
                         className="object-cover justify-center"
                         fill={true}
-                        src="/nigeria-login.webp"
+                        src="/images/nigeria-login.webp"
                         alt="bg-image"
                     />
                 </div>
