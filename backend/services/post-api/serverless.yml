@@ -52,6 +52,12 @@ functions:
       - http:
           path: api/posts
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
   getAllPosts:
     handler: src/server.handler
@@ -59,6 +65,11 @@ functions:
       - http:
           path: api/feed
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   getPostByHashtag:
     handler: src/server.handler
@@ -66,6 +77,11 @@ functions:
       - http:
           path: api/hashtags/{hashtag}/posts
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   getPostById:
     handler: src/server.handler
@@ -73,6 +89,11 @@ functions:
       - http:
           path: api/posts/{postId}
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   addComment:
     handler: src/server.handler
@@ -80,6 +101,12 @@ functions:
       - http:
           path: api/posts/{postId}/comments
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
   likePost:
     handler: src/server.handler
@@ -87,6 +114,12 @@ functions:
       - http:
           path: api/posts/{postId}/like
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
 resources:
   Resources:

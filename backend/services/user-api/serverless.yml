@@ -46,6 +46,12 @@ functions:
       - http:
           path: users/{userId}
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
   uploadProfilePicture:
     handler: src/server.handler
@@ -53,6 +59,12 @@ functions:
       - http:
           path: users/upload-profile-picture
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
   getUserProfile:
     handler: src/server.handler
@@ -60,6 +72,12 @@ functions:
       - http:
           path: me
           method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
           
 resources:
   Resources:

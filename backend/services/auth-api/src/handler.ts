@@ -64,12 +64,12 @@ export const createUser = async (req: Request, res: Response) => {
       const putCommand = new PutCommand(dynamoParams);
       await docClient.send(putCommand);
   
-      res.status(201).json({ message: 'User created successfully', user });
+      res.status(201).json(buildResponse({ message: 'User created successfully', user }));
     } catch (error) {
       if(error instanceof Error){
-        res.status(500).json({error:  `User already exits: ${error.message}` })
+        res.status(500).json(buildResponse({error:  `User already exits: ${error.message}` }))
       } else {
-        res.status(500).json({ error: 'Unknown error occurred' });
+        res.status(500).json(buildResponse({ error: 'Unknown error occurred' }));
       }
     }
   };
@@ -99,10 +99,7 @@ export const createUser = async (req: Request, res: Response) => {
       const authResponse = await cognito.adminInitiateAuth(authParams).promise();
   
       const { AccessToken } = authResponse.AuthenticationResult!;
-      res.status(200).json({
-        message: 'Login successful',
-        accessToken: AccessToken,
-      });
+      res.status(200).json(buildResponse({ message: 'Login successful', accessToken: AccessToken }));
     } catch (error) {
       console.error('Error during user login:', error);
       if (isAWSError(error)) {
