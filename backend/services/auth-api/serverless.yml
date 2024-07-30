@@ -65,6 +65,11 @@ functions:
       - http:
           path: auth/signup
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   loginUser:
     handler: src/server.handler
@@ -72,6 +77,11 @@ functions:
       - http:
           path: auth/login
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   verifyUser:
     handler: src/server.handler
@@ -79,6 +89,11 @@ functions:
       - http:
           path: auth/verify
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   generatePasswordResetCode:
     handler: src/server.handler
@@ -86,6 +101,11 @@ functions:
       - http:
           path: auth/reset-password-code
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   resetPassword:
     handler: src/server.handler
@@ -93,6 +113,11 @@ functions:
       - http:
           path: auth/reset-password
           method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
   sendWelcomeEmail:
     handler: src/sendWelcomeEmail.handler
