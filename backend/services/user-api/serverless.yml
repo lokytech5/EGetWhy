@@ -65,6 +65,9 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/uploadProfilePicture.json)}
 
   getUserProfile:
     handler: src/server.handler
@@ -89,6 +92,8 @@ resources:
 
 package:
   individually: true
+  include:
+    - schemas/**
   exclude:
     - node_modules/**
     - .git/**
