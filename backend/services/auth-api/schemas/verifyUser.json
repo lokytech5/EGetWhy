@@ -1,0 +1,17 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Verify User Schema",
+    "required": ["email", "code"],
+    "properties": {
+      "email": {
+        "type": "string",
+        "format": "email"
+      },
+      "code": {
+        "type": "string"
+      }
+    }
+  }
+  

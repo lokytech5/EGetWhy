@@ -70,6 +70,9 @@ functions:
             headers:
               - Content-Type
             allowCredentials: true
+          request:
+            schema:
+              application/json: ${file(schemas/createUser.json)}
 
   loginUser:
     handler: src/server.handler
@@ -82,6 +85,9 @@ functions:
             headers:
               - Content-Type
             allowCredentials: true
+          request:
+            schema:
+              application/json: ${file(schemas/loginUser.json)}
 
   verifyUser:
     handler: src/server.handler
@@ -94,6 +100,9 @@ functions:
             headers:
               - Content-Type
             allowCredentials: true
+          request:
+            schema:
+              application/json: ${file(schemas/verifyUser.json)}
 
   generatePasswordResetCode:
     handler: src/server.handler
@@ -106,6 +115,9 @@ functions:
             headers:
               - Content-Type
             allowCredentials: true
+          request:
+            schema:
+              application/json: ${file(schemas/generatePasswordResetCode.json)}
 
   resetPassword:
     handler: src/server.handler
@@ -118,6 +130,9 @@ functions:
             headers:
               - Content-Type
             allowCredentials: true
+          request:
+            schema:
+              application/json: ${file(schemas/resetPassword.json)}
 
   sendWelcomeEmail:
     handler: src/sendWelcomeEmail.handler
@@ -132,6 +147,8 @@ custom:
 
 package:
   individually: true
+  include:
+    - schemas/**
   exclude:
     - node_modules/**
     - .git/**
