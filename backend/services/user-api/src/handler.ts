@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
 import { docClient } from "../../../lib/dynamoClient";
 import { S3 } from "aws-sdk";
 import { buildResponse } from "../../../lib/responseUtils";
@@ -119,3 +119,66 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Could not upload profile picture' });
     }
   }
+
+  export const updateUser = async (req: Request, res: Response) => {
+    const userId = req.user as string;
+  
+    const { username, fullName, location, bio } = req.body;
+  
+    if (!userId) {
+      return res.status(400).json({ error: 'Missing userId' });
+    }
+  
+    const updateExpressions = [];
+    const expressionAttributeNames: { [key: string]: string } = {};
+    const expressionAttributeValues: { [key: string]: any } = {};
+  
+    if (username) {
+      updateExpressions.push('#username = :username');
+      expressionAttributeNames['#username'] = 'username';
+      expressionAttributeValues[':username'] = username;
+    }
+  
+    if (fullName) {
+      updateExpressions.push('#fullName = :fullName');
+      expressionAttributeNames['#fullName'] = 'fullName';
+      expressionAttributeValues[':fullName'] = fullName;
+    }
+  
+    if (location) {
+      updateExpressions.push('#location = :location');
+      expressionAttributeNames['#location'] = 'location';
+      expressionAttributeValues[':location'] = location;
+    }
+  
+    if (bio) {
+      updateExpressions.push('#bio = :bio');
+      expressionAttributeNames['#bio'] = 'bio';
+      expressionAttributeValues[':bio'] = bio;
+    }
+  
+    if (updateExpressions.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+  
+    const updateExpression = `SET ${updateExpressions.join(', ')}`;
+  
+    const params: UpdateCommandInput = {
+      TableName: USERS_TABLE,
+      Key: { userId },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+      ReturnValues: "ALL_NEW" // Return the updated item
+    };
+  
+    try {
+      const command = new UpdateCommand(params);
+      const { Attributes } = await docClient.send(command);
+  
+      res.status(200).json(buildResponse(Attributes));
+    } catch (error) {
+      console.error("Error updating user: ", error);
+      res.status(500).json({ error: 'Could not update user' });
+    }
+  };

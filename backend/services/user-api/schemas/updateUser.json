@@ -1,0 +1,22 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Update User Schema",
+    "required": ["username", "fullName", "location", "bio"],
+    "properties": {
+      "username": {
+        "type": "string"
+      },
+      "fullName": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      },
+      "bio": {
+        "type": "string"
+      }
+    }
+  }
+  

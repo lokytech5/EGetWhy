@@ -81,6 +81,22 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
+
+  updateUser:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/update
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/updateUser.json)}
           
 resources:
   Resources:
