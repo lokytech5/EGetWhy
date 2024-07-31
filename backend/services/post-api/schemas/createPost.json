@@ -1,0 +1,27 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Create Post Schema",
+    "required": ["userId", "content"],
+    "properties": {
+      "userId": {
+        "type": "string"
+      },
+      "content": {
+        "type": "string"
+      },
+      "hashtags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "default": []
+      },
+      "isAnonymous": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  }
+  

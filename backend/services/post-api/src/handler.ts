@@ -17,11 +17,13 @@ export const createPost = async (req: Request, res: Response) => {
   // Concatenate hashtags into a single string
   const hashtagsString = hashtags.join(', ');
 
+  const postUserId = isAnonymous ? 'ANONYMOUS' : userId;
+
   const postParams = {
     TableName: process.env.POSTS_TABLE!,
     Item: {
       PostID: postId,
-      UserID: userId,
+      UserID: postUserId,
       Content: content,
       Hashtags: hashtagsString,
       CategoryID: categoryID || null,

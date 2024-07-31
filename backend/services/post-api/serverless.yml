@@ -58,6 +58,9 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/createPost.json)}
 
   getAllPosts:
     handler: src/server.handler
@@ -107,6 +110,9 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/addComment.json)}
 
   likePost:
     handler: src/server.handler
@@ -120,6 +126,9 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/likePost.json)}
 
 resources:
   Resources:
@@ -199,6 +208,8 @@ resources:
 
 package:
   individually: true
+  include:
+    - schemas/**
   exclude:
     - node_modules/**
     - .git/**
