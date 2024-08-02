@@ -1,13 +1,12 @@
-// @ts-nocheck 
-'use client'
+"use client"
 import React from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema } from '../utils/zodSchemas';
+import { registerSchema, FormData } from '../utils/zodSchemas';
 
 const Register = () => {
-    const { register, handleSubmit, formState: { errors }, } = useForm({ resolver: zodResolver(registerSchema),});
+    const { register, handleSubmit, formState: { errors }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
 
     const onSubmit = (data: any) => {
         console.log(data);
