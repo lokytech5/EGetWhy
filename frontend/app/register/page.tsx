@@ -11,7 +11,7 @@ const Register = () => {
 
     const onSubmit = (data: any) => {
         console.log(data);
-        // handle form submission
+        // handle form submission logic here
     };
 
     return (
