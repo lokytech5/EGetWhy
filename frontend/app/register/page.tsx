@@ -35,7 +35,7 @@ const Register = () => {
                                         id="name"
                                         {...register('name')}
                                         type="text"
-                                        className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
+                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
                                     {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                                 </div>
@@ -50,7 +50,7 @@ const Register = () => {
                                         id="username"
                                         {...register('username')}
                                         type="text"
-                                        className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
+                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
                                     {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
                                 </div>
@@ -66,7 +66,7 @@ const Register = () => {
                                         {...register('email')}
                                         type="email"
                                         autoComplete="email"
-                                        className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800
+                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800
 "
                                     />
                                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -84,7 +84,7 @@ const Register = () => {
                                         id="password"
                                         {...register('password')}
                                         type="password"
-                                        className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
+                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
                                     {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
                                 </div>
