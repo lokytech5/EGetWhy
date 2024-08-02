@@ -1,6 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
+import React from 'react';
 import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema, FormData } from '../utils/zodSchemas';
 
-const register = () => {
+const Register = () => {
+    const { register, handleSubmit, formState: { errors }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
+
+    const onSubmit = (data: any) => {
+        console.log(data);
+        // handle form submission
+    };
+
     return (
         <main className="bg-base-300 h-screen flex items-center justify-center">
             <div className="grid w-full h-full grid-cols-1 bg-white box-anim md:grid-cols-2">
@@ -12,19 +25,19 @@ const register = () => {
                     </div>
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                         <p className='font-semibold pb-5'>Please enter your details</p>
-                        <form action="#" method="POST" className="space-y-6">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium leading-6 text-white">
                                     Full Name
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        id="text"
-                                        name="name"
+                                        id="name"
+                                        {...register('name')}
                                         type="text"
-                                        required
                                         className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
+                                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                                 </div>
                             </div>
 
@@ -34,12 +47,12 @@ const register = () => {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        id="text"
-                                        name="username"
+                                        id="username"
+                                        {...register('username')}
                                         type="text"
-                                        required
                                         className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
+                                    {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
                                 </div>
                             </div>
 
@@ -50,13 +63,13 @@ const register = () => {
                                 <div className="mt-2">
                                     <input
                                         id="email"
-                                        name="email"
+                                        {...register('email')}
                                         type="email"
-                                        required
                                         autoComplete="email"
                                         className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800
 "
                                     />
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                                 </div>
                             </div>
 
@@ -69,11 +82,11 @@ const register = () => {
                                 <div className="mt-2">
                                     <input
                                         id="password"
-                                        name="password"
+                                        {...register('password')}
                                         type="password"
-                                        required
                                         className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
+                                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
                                 </div>
                             </div>
 
@@ -108,4 +121,4 @@ const register = () => {
     );
 }
 
-export default register
+export default Register
