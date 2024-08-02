@@ -8,6 +8,7 @@ import Providers from './provider'
 import ToastNotify from './components/ToastNotify'
 
 const inter = Inter({ subsets: ['latin'] })
+//new update
 
 export const metadata: Metadata = {
   title: 'Create Next App',
