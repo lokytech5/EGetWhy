@@ -1,22 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, FormData } from '../utils/zodSchemas';
 import { useRegister } from '../hooks/useRegister';
 import Spinner from '../components/Spinner';
+import { useRouter } from 'next/navigation';
+import CustomModal from '../components/CustomModal';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
     const { mutate: registerUser, isLoading, isError, error } = useRegister();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
 
+    // handle form submission
     const onSubmit = (data: FormData) => {
         console.log(data);
-        // handle form submission
-        registerUser(data)
+        registerUser(data, {
+            onSuccess : () => {
+                setIsModalOpen(true);
+            }
+        })
     };
+
+    //handle close modal
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        router.push("/verify")
+    }
 
     return (
         <main className="bg-base-300 h-screen flex items-center justify-center">
@@ -124,6 +138,13 @@ const Register = () => {
                 
             </div>
             )}
+            <CustomModal
+             title="Registration Successful"
+             message="Please check your email for a verification code."
+             isOpen={isModalOpen}
+             onClose={handleModalClose}
+             onConfirm={handleModalClose}
+             />
         </main>
     );
 }
