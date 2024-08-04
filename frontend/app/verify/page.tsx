@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react'
 import { VerificationData, verificationSchema } from '../utils/zodSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
