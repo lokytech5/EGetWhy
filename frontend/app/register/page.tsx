@@ -5,17 +5,22 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, FormData } from '../utils/zodSchemas';
+import { useRegister } from '../hooks/useRegister';
+import Spinner from '../components/Spinner';
 
 const Register = () => {
-    const { register, handleSubmit, formState: { errors }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
+    const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
+    const { mutate: registerUser, isLoading, isError, error } = useRegister();
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: FormData) => {
         console.log(data);
-        // handle form submission logic here
+        // handle form submission
+        registerUser(data)
     };
 
     return (
         <main className="bg-base-300 h-screen flex items-center justify-center">
+            {isLoading || isSubmitting ? <Spinner /> : (
             <div className="grid w-full h-full grid-cols-1 bg-white box-anim md:grid-cols-2">
                 <div className="bg-base-300 text-white flex items-center justify-center flex-col">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -116,7 +121,9 @@ const Register = () => {
                         alt="bg-image"
                     />
                 </div>
+                
             </div>
+            )}
         </main>
     );
 }
