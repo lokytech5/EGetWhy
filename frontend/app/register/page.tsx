@@ -32,17 +32,17 @@ const Register = () => {
                         <p className='font-semibold pb-5'>Please enter your details</p>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                             <div>
-                                <label htmlFor="name" className="block text-sm font-medium leading-6 text-white">
+                                <label htmlFor="fullName" className="block text-sm font-medium leading-6 text-white">
                                     Full Name
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        id="name"
-                                        {...register('name')}
+                                        id="fullName"
+                                        {...register('fullName')}
                                         type="text"
                                         className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
-                                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                                    {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
                                 </div>
                             </div>
 

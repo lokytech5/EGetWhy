@@ -1,18 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
 import apiClient from '../utils/apiClient';
 import { showToastSuccess, showToastError } from '../utils/toastUtils';
+import { RegisterData, RegisterResponse } from '../components/types';
+import { AxiosError } from 'axios';
 
-interface RegisterData {
-    username: string;
-    email: string;
-    password: string;
-    name: string; // changed from fullName to name due to TypeScript error
+interface ErrorResponse {
+    error: string;
 }
 
 export const useRegister = () => {
-    return useMutation(
+
+    return useMutation<RegisterResponse, AxiosError<ErrorResponse>, RegisterData>(
         async (registerData: RegisterData) => {
-            const response = await apiClient.post('/auth/signup', registerData);
+            const response = await apiClient.post<RegisterResponse>('/auth/signup', registerData);
             return response.data;
         },
         {
@@ -20,9 +20,14 @@ export const useRegister = () => {
                 showToastSuccess('Registration successful!');
 
             },
-            onError: (error) => {
-                showToastError('Registration failed. Please try again.');
+            onError: (error: AxiosError<ErrorResponse>) => {
+                if(error.response && error.response.data){
+                    showToastError(`Registration failed: ${error.response.data.error}`);
+                } else {
+                    showToastError('Registration failed. Please try again.');
+                }
             },
         }
     );
 };
+
