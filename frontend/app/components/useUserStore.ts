@@ -13,15 +13,19 @@ interface User {
   interface UserState {
     user: User | null;
     token: string | null;
+    verified: boolean;
     setUser: (user: User) => void;
     setToken: (token: string) => void;
+    setIsVerified: (verified: boolean) => void;
     clearUser: () => void;
   }
 
   export const useUserStore = create<UserState>((set) => ({
     user: null,
     token: null,
+    verified: false,
     setUser: (user) => set({ user }),
     setToken: (token) => set({ token }),
-    clearUser: () => set({ user: null, token: null }),
+    setIsVerified: (verified) => set({ verified }),
+    clearUser: () => set({ user: null, token: null, verified: false }),
   }));

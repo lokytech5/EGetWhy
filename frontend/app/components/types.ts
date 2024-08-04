@@ -24,3 +24,15 @@ export interface RegisterResponse {
     meta: {}
 
 }
+
+export interface VerifyData {
+    email: string;
+    code: string;
+}
+
+export interface VerifyResponse {
+    data: {
+        message: string;
+    },
+    meta: {}
+}

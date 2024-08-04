@@ -8,3 +8,10 @@ export const registerSchema = z.object({
 });
 
 export type FormData = z.infer<typeof registerSchema>;
+
+export const verificationSchema = z.object({
+    email: z.string().email({ message: 'Invalid email address' }),
+    code: z.string().min(6, { message: 'Verification code must be at least 6 characters' }),
+})
+
+export type VerificationData = z.infer<typeof verificationSchema>;
