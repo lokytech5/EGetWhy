@@ -12,7 +12,7 @@ import CustomModal from '../components/CustomModal';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm<FormData>({ resolver: zodResolver(registerSchema),});
-    const { mutate: registerUser, isLoading, isError, error } = useRegister();
+    const { mutate: registerUser, isLoading, isError: _isError, error: _error } = useRegister();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 

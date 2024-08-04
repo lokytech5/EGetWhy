@@ -21,7 +21,7 @@ export interface RegisterResponse {
             updatedAt: string;
         }
     },
-    meta: {}
+    meta: Record<string, never>
 
 }
 
@@ -34,5 +34,5 @@ export interface VerifyResponse {
     data: {
         message: string;
     },
-    meta: {}
+    meta: Record<string, never>
 }
