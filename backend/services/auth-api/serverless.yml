@@ -65,8 +65,8 @@ functions:
       - http:
           path: auth/signup
           method: post
-          cors:
-            origin: "*"
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -85,8 +85,8 @@ functions:
       - http:
           path: auth/login
           method: post
-          cors:
-            origin: "*"
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -101,8 +101,8 @@ functions:
       - http:
           path: auth/verify
           method: post
-          cors:
-            origin: "*"
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -117,8 +117,8 @@ functions:
       - http:
           path: auth/reset-password-code
           method: post
-          cors:
-            origin: "*"
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -133,8 +133,8 @@ functions:
       - http:
           path: auth/reset-password
           method: post
-          cors:
-            origin: "*"
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
