@@ -73,6 +73,7 @@ functions:
               - X-Amz-Date
               - X-Api-Key
               - X-Amz-Security-Token
+              - X-Amz-User-Agent
             allowCredentials: true
           request:
             schema:
@@ -85,8 +86,7 @@ functions:
           path: auth/login
           method: post
           cors:
-            origin:
-              - "*"
+            origin: "*"
             headers:
               - Content-Type
               - Authorization
@@ -102,8 +102,7 @@ functions:
           path: auth/verify
           method: post
           cors:
-            origin:
-              - "*"
+            origin: "*"
             headers:
               - Content-Type
               - Authorization
@@ -119,8 +118,7 @@ functions:
           path: auth/reset-password-code
           method: post
           cors:
-            origin:
-              - "*"
+            origin: "*"
             headers:
               - Content-Type
               - Authorization
@@ -136,8 +134,7 @@ functions:
           path: auth/reset-password
           method: post
           cors:
-            origin:
-              - "http://localhost:3000"
+            origin: "*"
             headers:
               - Content-Type
               - Authorization
