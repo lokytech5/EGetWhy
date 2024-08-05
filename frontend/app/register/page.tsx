@@ -21,6 +21,8 @@ const Register = () => {
         console.log(data);
         registerUser(data, {
             onSuccess : () => {
+                //Storing user email in local storage
+                localStorage.setItem('email', data.email);
                 setIsModalOpen(true);
             }
         })

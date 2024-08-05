@@ -9,11 +9,16 @@ import { useUserStore } from '../components/useUserStore';
 import { useRouter } from 'next/navigation';
 
 const VerifyPage = () => {
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<VerificationData>({ resolver: zodResolver(verificationSchema) });
+    const email = typeof window !== 'undefined' ? localStorage.getItem('email') || '' : '';
+    const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm<VerificationData>({ resolver: zodResolver(verificationSchema), defaultValues: {email} });
     const { mutate: verifyUser, isLoading, isError, isSuccess, error} = useVerify();
     const [verificationStatus, setVerificationStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const setIsVerified = useUserStore((state) => state.setIsVerified);
     const router = useRouter();
+
+    if(email) {
+        setValue('email', email);  
+    }
 
     useEffect(() => {
         if(isSuccess) {
@@ -31,6 +36,8 @@ const VerifyPage = () => {
         //handle submit logic here
         verifyUser(data)
     }
+
+   
     
   return (
     <main className="bg-base-300 h-screen flex items-center justify-center">
@@ -40,7 +47,7 @@ const VerifyPage = () => {
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow">
             <h2 className="text-2xl font-bold text-center">Verify Your Account</h2>
             {verificationStatus === 'success' ? (
-                <div className="text-center text-green-600">
+                <div className="text-center text-green-500">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.707-5.293a1 1 0 011.414 0l3-3a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2z" clipRule="evenodd" />
                     </svg>
@@ -49,27 +56,33 @@ const VerifyPage = () => {
             ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">Email</label>
+                        <div className="mt-2">
                         <input
                             id="email"
                             {...register('email')}
                             type="email"
-                            className="p-2 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
+                            readOnly
                         />
-                        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+                        {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+                        </div>
                     </div>
+
                     <div>
-                        <label htmlFor="code" className="block text-sm font-medium">Verification Code</label>
+                        <label htmlFor="code" className="block text-sm font-medium leading-6 text-white">Verification Code</label>
+                        <div>
                         <input
                             id="code"
                             {...register('code')}
                             type="text"
-                            className="p-2 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                        {errors.code && <p className="mt-1 text-xs text-red-600">{errors.code.message}</p>}
+                            className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
+                            />
+                        {errors.code && <p className="text-xs text-red-500 mt-1">{errors.code.message}</p>}
+                        </div>
                     </div>
                     {verificationStatus === 'error' && (
-                        <div className="text-center text-red-600">
+                        <div className="text-center text-red-500">
                             <p className="mt-2 text-lg">Verification failed. Please try again.</p>
                             {error?.response?.data.error && <p className="mt-1 text-sm">{error.response.data.error}</p>}
                         </div>
@@ -77,8 +90,8 @@ const VerifyPage = () => {
                     <div>
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
+                            className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
                             Verify
                         </button>
                     </div>
