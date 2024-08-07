@@ -7,18 +7,19 @@ import { LoginFormData, loginSchema } from '../utils/zodSchemas';
 import { useForm } from 'react-hook-form';
 import Spinner from '../components/Spinner';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema),});
     const { mutate: loginUser, isLoading, isError: _isError, error: _error } = useLogin();
+    const router = useRouter();
 
     const onSubmit = (data: LoginFormData) => {
         console.log(data);
-        loginUser(data, {
-            onSuccess : () => {
-                
-            }
-        })
+        loginUser(data);
+        setTimeout(() => {
+            router.push('/');
+        }, 2000)
     };
 
     return (

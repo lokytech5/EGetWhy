@@ -3,15 +3,15 @@ import apiClient from "../utils/apiClient"
 import { ProfileResponse } from "../components/types";
 
 export const useProfile = (token: string) => {
-    const fetchProfile = () => {
-        return apiClient.get('/me').then(res => res.data);
-    };
+    // const fetchProfile = () => {
+    //     return apiClient.get('/me').then(res => res.data);
+    // };
 
-    const queryInfo = useQuery<ProfileResponse, Error>({
-        queryKey: ['profile'],
-        queryFn: fetchProfile,
-        enabled: !!token,
-    });
+    // const queryInfo = useQuery<ProfileResponse, Error>({
+    //     queryKey: ['profile'],
+    //     queryFn: fetchProfile,
+    //     enabled: !!token
+    // });
 
-    return queryInfo;
+    // return queryInfo;
 }
