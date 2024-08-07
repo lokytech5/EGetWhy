@@ -36,3 +36,16 @@ export interface VerifyResponse {
     },
     meta: Record<string, never>
 }
+
+export interface LoginData {
+    email: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    data: {
+        message: string;
+        accessToken: string;
+    },
+    meta: Record<string, never>
+}

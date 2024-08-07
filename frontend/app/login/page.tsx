@@ -1,8 +1,29 @@
-import Image from 'next/image';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 
-const login = () => {
+import Image from 'next/image';
+import { useLogin } from '../hooks/useLogin';
+import { LoginFormData, loginSchema } from '../utils/zodSchemas';
+import { useForm } from 'react-hook-form';
+import Spinner from '../components/Spinner';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const Login = () => {
+    const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema),});
+    const { mutate: loginUser, isLoading, isError: _isError, error: _error } = useLogin();
+
+    const onSubmit = (data: LoginFormData) => {
+        console.log(data);
+        loginUser(data, {
+            onSuccess : () => {
+                
+            }
+        })
+    };
+
     return (
         <main className="bg-base-300 h-screen flex items-center justify-center">
+            {isLoading || isSubmitting ? <Spinner /> : (
             <div className="grid w-full h-full grid-cols-1 bg-white box-anim md:grid-cols-2">
                 <div className="bg-base-300 text-white flex items-center justify-center flex-col">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -12,7 +33,7 @@ const login = () => {
                     </div>
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                         <p className='font-semibold pb-5'>Log in to your account</p>
-                        <form action="#" method="POST" className="space-y-6">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
                                     Email address
@@ -20,13 +41,11 @@ const login = () => {
                                 <div className="mt-2">
                                     <input
                                         id="email"
-                                        name="email"
                                         type="email"
-                                        required
-                                        autoComplete="email"
-                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800
-"
+                                        {...register('email')}
+                                        className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
+                                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                                 </div>
                             </div>
 
@@ -44,12 +63,11 @@ const login = () => {
                                 <div className="mt-2">
                                     <input
                                         id="password"
-                                        name="password"
                                         type="password"
-                                        required
-                                        autoComplete="current-password"
+                                        {...register('password')}
                                         className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6 bg-gray-800"
                                     />
+                             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
                                 </div>
                             </div>
 
@@ -80,8 +98,9 @@ const login = () => {
                     />
                 </div>
             </div>
+            )}
         </main>
     );
 }
 
-export default login
+export default Login

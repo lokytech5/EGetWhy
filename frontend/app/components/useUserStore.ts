@@ -17,6 +17,7 @@ interface User {
     setUser: (user: User) => void;
     setToken: (token: string) => void;
     setIsVerified: (verified: boolean) => void;
+    fetchUserDetails: (token: string) => Promise<void>;
     clearUser: () => void;
   }
 
@@ -27,5 +28,8 @@ interface User {
     setUser: (user) => set({ user }),
     setToken: (token) => set({ token }),
     setIsVerified: (verified) => set({ verified }),
+    fetchUserDetails: async (token: string) => {
+
+    },
     clearUser: () => set({ user: null, token: null, verified: false }),
   }));
