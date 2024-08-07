@@ -4,7 +4,6 @@ import { authApiClient, userApiClient } from "../utils/apiClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showToastError, showToastSuccess } from "../utils/toastUtils";
 import { useUserStore } from "../components/useUserStore";
-import { useProfile } from "./useProfile";
 import { useRouter } from "next/navigation";
 
 interface ErrorResponse {

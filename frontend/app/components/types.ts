@@ -64,3 +64,11 @@ export interface ProfileResponse {
     },
     meta: Record<string, never>
 }
+
+export interface ProfileUpdateData {
+    userId: string;
+    username: string; 
+    fullName: string;
+    bio?: string;
+    location?: string;
+}
