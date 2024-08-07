@@ -3,8 +3,10 @@ import serverless from "serverless-http";
 import { getUserById, getUserProfile, updateUser, uploadProfilePicture } from "./handler";
 import { validateToken } from "../../../middleware/validateToken";
 import fileUpload  from "../../../middleware/fileUploads";
+import { applyMiddleware } from "../../../middleware/corsConfig"
 
 const app = express();
+const origin = "http://localhost:3000"
 
 app.use(express.json());
 
@@ -16,4 +18,6 @@ app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-export const handler = serverless(app);
+const expressHandler = serverless(app);
+
+export const handler = applyMiddleware(expressHandler, origin);

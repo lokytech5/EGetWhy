@@ -46,8 +46,8 @@ functions:
       - http:
           path: users/{userId}
           method: get
-          cors:
-            origin: '*'
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -59,8 +59,8 @@ functions:
       - http:
           path: users/upload-profile-picture
           method: post
-          cors:
-            origin: '*'
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -75,8 +75,8 @@ functions:
       - http:
           path: me
           method: get
-          cors:
-            origin: '*'
+          cors: 
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
