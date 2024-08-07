@@ -3,6 +3,11 @@ import { useUserStore } from './useUserStore';
 
 const Drawer = () => {
     const isAuthenticated = useUserStore((state) => state.isAuthenticated );
+    const loading = useUserStore((state) => state.loading);
+
+    if (loading) {
+        return null; // or a loading spinner if you want
+      }
     
   return (
     <div className="drawer-end">

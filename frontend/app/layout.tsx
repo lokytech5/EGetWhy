@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Providers from './provider'
 import ToastNotify from './components/ToastNotify'
+import UserInitializer from './components/UserInitializer';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+        <UserInitializer/>
       <div className="min-h-screen bg-base-300 flex flex-col">
           <Navbar />
           <div className="flex-grow">{children}</div>

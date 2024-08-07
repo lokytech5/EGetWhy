@@ -7,6 +7,11 @@ import { useUserStore } from "./useUserStore";
 
 const Navbar = () => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated );
+  const loading = useUserStore((state) => state.loading);
+
+    if (loading) {
+        return null; // or a loading spinner if you want
+      }
   return (
     <div className="navbar bg-base-100 text-neutral-content">
       <div className="navbar-start">
