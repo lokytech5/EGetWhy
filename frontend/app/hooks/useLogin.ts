@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { LoginData, LoginResponse, ProfileResponse } from "../components/types";
-import apiClient from "../utils/apiClient";
+import { authApiClient, userApiClient } from "../utils/apiClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showToastError, showToastSuccess } from "../utils/toastUtils";
 import { useUserStore } from "../components/useUserStore";
@@ -17,7 +17,7 @@ export const useLogin = () => {
 
     return useMutation<LoginResponse, AxiosError<ErrorResponse>, LoginData>(
         async (loginData: LoginData) => {
-            const response = await apiClient.post<LoginResponse>('/auth/login', loginData);
+            const response = await authApiClient.post<LoginResponse>('/auth/login', loginData);
             return response.data;
         },
         {
@@ -31,7 +31,7 @@ export const useLogin = () => {
                     const profileData = await queryClient.fetchQuery<ProfileResponse, Error>({
                         queryKey: ['profile'],
                         queryFn: async () => {
-                            const response = await apiClient.get('/me');
+                            const response = await userApiClient.get('/me');
                             return response.data;
                         }
                     });

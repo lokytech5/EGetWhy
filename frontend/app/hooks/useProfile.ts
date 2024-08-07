@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import apiClient from "../utils/apiClient"
+
 import { ProfileResponse } from "../components/types";
 
 export const useProfile = (token: string) => {

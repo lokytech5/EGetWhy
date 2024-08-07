@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import apiClient from '../utils/apiClient';
+import { authApiClient } from '../utils/apiClient';
 import { showToastSuccess, showToastError } from '../utils/toastUtils';
 import { RegisterData, RegisterResponse } from '../components/types';
 import { AxiosError } from 'axios';
@@ -12,7 +12,7 @@ export const useRegister = () => {
 
     return useMutation<RegisterResponse, AxiosError<ErrorResponse>, RegisterData>(
         async (registerData: RegisterData) => {
-            const response = await apiClient.post<RegisterResponse>('/auth/signup', registerData);
+            const response = await authApiClient.post<RegisterResponse>('/auth/signup', registerData);
             return response.data;
         },
         {

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { VerifyData, VerifyResponse } from "../components/types"
 import { AxiosError } from "axios"
-import apiClient from "../utils/apiClient"
+import { authApiClient } from "../utils/apiClient"
 import { showToastError, showToastSuccess } from "../utils/toastUtils"
 
 interface ErrorResponse {
@@ -11,7 +11,7 @@ interface ErrorResponse {
 export const useVerify = () => {
     return useMutation<VerifyResponse, AxiosError<ErrorResponse>, VerifyData>(
         async (verifyData: VerifyData) => {
-            const response = await apiClient.post<VerifyResponse>('/auth/verify', verifyData);
+            const response = await authApiClient.post<VerifyResponse>('/auth/verify', verifyData);
             return response.data;
         },
         {
