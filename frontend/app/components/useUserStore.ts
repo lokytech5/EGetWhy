@@ -16,9 +16,11 @@ interface UserState {
   verified: boolean;
   isAuthenticated: boolean;
   loading: boolean;
+  userFetched: boolean;
   setUser: (user: User) => void;
   setToken: (token: string) => void;
   setIsVerified: (verified: boolean) => void;
+  setUserFetched: (fetched: boolean) => void;
   initializeUser: () => void;
   persistUser: () => void;
   clearUser: () => void;
@@ -30,10 +32,12 @@ export const useUserStore = create<UserState>((set, get) => ({
   verified: false,
   isAuthenticated: false,
   loading: true,
+  userFetched: false,
   setUser: (user) => set({ user, isAuthenticated: true }),
   setToken: (token) => set({ token }),
   setIsVerified: (verified) => set({ verified }),
-  clearUser: () => set({ user: null, token: null, verified: false, isAuthenticated: false }),
+  setUserFetched: (fetched) => set({ userFetched: fetched }),
+  clearUser: () => set({ user: null, token: null, verified: false, isAuthenticated: false, userFetched: false }),
 
   initializeUser: () => {
     set({ loading: true });
@@ -45,6 +49,7 @@ export const useUserStore = create<UserState>((set, get) => ({
           user: parsedUser.user,
           token: parsedUser.token,
           isAuthenticated: !!parsedUser.user && !!parsedUser.token,
+          userFetched: true,
           loading: false,
         });
       } catch (error) {
@@ -55,8 +60,10 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ loading: false });
     }
   },
+
   persistUser: () => {
     const { user, token } = get();
     localStorage.setItem('user', JSON.stringify({ user, token }));
   },
+  
 }));

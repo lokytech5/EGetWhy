@@ -14,6 +14,8 @@ interface ErrorResponse {
 export const useLogin = () => {
     const setUser = useUserStore.getState().setUser;
     const setToken = useUserStore.getState().setToken;
+    const setUserFetched = useUserStore.getState().setUserFetched;
+    const userFetched = useUserStore.getState().userFetched;
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -28,20 +30,24 @@ export const useLogin = () => {
                 localStorage.setItem('token', token);
                 setToken(token);
 
-                try {
-                    const profileData = await queryClient.fetchQuery<ProfileResponse, Error>({
-                        queryKey: ['profile'],
-                        queryFn: async () => {
-                            const response = await userApiClient.get('/me');
-                            return response.data;
-                        }
-                    });
-                    setUser(profileData.data);
-                    router.push('/');
-                    showToastSuccess('Login successful!');
-                } catch (error) {
-                    console.error('Failed to fetch user profile:', error);
+                if (!userFetched) {
+                    try {
+                        const profileData = await queryClient.fetchQuery<ProfileResponse, Error>({
+                            queryKey: ['profile'],
+                            queryFn: async () => {
+                                const response = await userApiClient.get('/me');
+                                return response.data;
+                            }
+                        });
+                        setUser(profileData.data);
+                        setUserFetched(true);
+                    } catch (error) {
+                        console.error('Failed to fetch user profile:', error);
+                    }
                 }
+
+                router.push('/');
+                showToastSuccess('Login successful!');
             },
 
             onError: (error: AxiosError<ErrorResponse>) => {
