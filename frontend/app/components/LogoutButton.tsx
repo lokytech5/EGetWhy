@@ -10,7 +10,7 @@ const LogoutButton = () => {
     const handleLogout = () => {
         logout();
         localStorage.removeItem("token");
-        router.push('/home')
+        router.push('/')
       };
       return (
         <ul tabIndex={0} 

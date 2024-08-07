@@ -17,9 +17,6 @@ const Login = () => {
     const onSubmit = (data: LoginFormData) => {
         console.log(data);
         loginUser(data);
-        setTimeout(() => {
-            router.push('/');
-        }, 2000)
     };
 
     return (

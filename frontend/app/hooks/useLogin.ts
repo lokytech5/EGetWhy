@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showToastError, showToastSuccess } from "../utils/toastUtils";
 import { useUserStore } from "../components/useUserStore";
 import { useProfile } from "./useProfile";
+import { useRouter } from "next/navigation";
 
 interface ErrorResponse {
     error: string;
@@ -14,6 +15,7 @@ export const useLogin = () => {
     const setUser = useUserStore.getState().setUser;
     const setToken = useUserStore.getState().setToken;
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     return useMutation<LoginResponse, AxiosError<ErrorResponse>, LoginData>(
         async (loginData: LoginData) => {
@@ -21,8 +23,7 @@ export const useLogin = () => {
             return response.data;
         },
         {
-            onSuccess: async (data) => {
-                showToastSuccess('Login successful!');
+            onSuccess: async (data) => {           
                 const token = data.data.accessToken;
                 localStorage.setItem('token', token);
                 setToken(token);
@@ -36,6 +37,8 @@ export const useLogin = () => {
                         }
                     });
                     setUser(profileData.data);
+                    router.push('/');
+                    showToastSuccess('Login successful!');
                 } catch (error) {
                     console.error('Failed to fetch user profile:', error);
                 }

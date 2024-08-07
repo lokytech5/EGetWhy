@@ -1,6 +1,9 @@
 import React from 'react'
+import { useUserStore } from './useUserStore';
 
 const Drawer = () => {
+    const isAuthenticated = useUserStore((state) => state.isAuthenticated );
+    
   return (
     <div className="drawer-end">
     <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -41,12 +44,17 @@ const Drawer = () => {
         <li>
           <a href="/about">About</a>
         </li>
+        {!isAuthenticated && (
+            <>
+          
         <li>
           <a href="/login">Login</a>
         </li>
         <li>
           <a href="/register">Register</a>
         </li>
+            </>
+        )}
       </ul>
     </div>
   </div>
