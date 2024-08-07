@@ -1,5 +1,6 @@
-import { useRouter } from 'next/navigation';
+"use client"
 import React from 'react'
+import { useRouter } from 'next/navigation';
 import { useUserStore } from './useUserStore';
 
 const LogoutButton = () => {
