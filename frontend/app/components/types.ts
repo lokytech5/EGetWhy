@@ -49,3 +49,18 @@ export interface LoginResponse {
     },
     meta: Record<string, never>
 }
+
+export interface ProfileResponse {
+    data: {
+        profilePictureURL: string,
+        location: string,
+        bio: string,
+        userId: string,
+        updatedAt: string,
+        createdAt: string,
+        username: string,
+        fullName: string,
+        email: string,
+    },
+    meta: Record<string, never>
+}
