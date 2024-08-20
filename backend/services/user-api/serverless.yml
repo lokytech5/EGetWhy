@@ -101,6 +101,35 @@ functions:
             schemas:
               application/json: ${file(schemas/updateUser.json)}
 
+  updateUserInterests:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/update-interests
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/updateUserInterests.json)}
+
+  getUserInterests:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/{userId}/interests
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
   clearUserInterests:
     handler: src/server.handler
     events:
