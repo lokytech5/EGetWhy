@@ -10,6 +10,8 @@ provider:
   stage: ${opt:stage, 'dev'}  # Default to 'dev' if not specified
   environment:
     USERS_TABLE: ${env:USERS_TABLE}
+    USER_INTERESTS_TABLE:
+      "Fn::ImportValue": UserInterestsTableName-${self:provider.stage}
     COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
     COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
@@ -29,7 +31,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: 
-            'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+            - 'Fn::ImportValue': UsersTableArn-${self:provider.stage}
+            - 'Fn::ImportValue': UserInterestsTableArn-${self:provider.stage}
         - Effect: Allow
           Action:
             - s3:PutObject
@@ -97,6 +100,22 @@ functions:
           request:
             schemas:
               application/json: ${file(schemas/updateUser.json)}
+
+  clearUserInterests:
+    handler: src/server.handler
+    events:
+      - http:
+          path: users/{userId}/clear-interests
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+          request:
+            schemas:
+              application/json: ${file(schemas/clearUserInterests.json)}
           
 resources:
   Resources:

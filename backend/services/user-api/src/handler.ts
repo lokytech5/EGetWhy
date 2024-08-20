@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { GetCommand, UpdateCommand, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand, UpdateCommand, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
 import { docClient } from "../../../lib/dynamoClient";
 import { S3 } from "aws-sdk";
 import { buildResponse } from "../../../lib/responseUtils";
 
 const USERS_TABLE = process.env.USERS_TABLE;
+const USER_INTERESTS_TABLE = process.env.USER_INTERESTS_TABLE;
 const s3 = new S3();
 const BUCKET_NAME = process.env.S3_BUCKET_NAME;
 
@@ -182,3 +183,75 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Could not update user' });
     }
   };
+
+  export const updateUserInterests = async (req: Request, res: Response) => {
+    const { userId, interests } = req.body; // interests should be an array of hashtags
+
+  if (!userId || !interests || !Array.isArray(interests)) {
+    return res.status(400).json({ error: 'Missing required fields or interests is not an array' });
+  }
+
+  const params = {
+    TableName: USER_INTERESTS_TABLE,
+    Item: {
+      UserID: userId,
+      Interests: interests,
+    },
+  };
+
+  try {
+    const command = new PutCommand(params); 
+    await docClient.send(command);
+    res.status(200).json(buildResponse(params.Item));
+  } catch (error) {
+    console.error('Error updating user interests:', error);
+    res.status(500).json(buildResponse(null, { error: 'Could not update user interests' }));
+  }
+  }
+
+  export const getUserInterests = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+  
+    const params = { 
+      TableName: USER_INTERESTS_TABLE,
+      Key: { UserID: userId },
+    };
+  
+    try {
+      const command = new GetCommand(params);
+      const data = await docClient.send(command);
+      if (data.Item) {
+        res.status(200).json(buildResponse(data.Item));
+      } else {
+        res.status(404).json(buildResponse(null, { error: 'User interests not found' }));
+      }
+    } catch (error) {
+      console.error('Error fetching user interests:', error);
+      res.status(500).json(buildResponse(null, { error: 'Could not retrieve user interests' }));
+    }
+  };
+
+export const clearUserInterests = async (req: Request, res: Response) => {
+  const { userId } = req.body;
+
+  if(!userId) {
+    res.status(400).json(buildResponse({ error: 'Missing required fields'}))
+  }
+
+  const params = {
+    TableName: USER_INTERESTS_TABLE,
+    Item: {
+      UserID: userId,
+      Interests: [],
+    },
+  };
+
+  try {
+    const command = new PutCommand(params);
+    await docClient.send(command);
+    res.status(200).json(buildResponse({ message: 'User interests cleared successfully'}))
+  } catch (error) {
+    console.error('Error clearing user interests:', error);
+    res.status(500).json(buildResponse(null, { error: 'Could not clear user interests' }));
+  }
+}

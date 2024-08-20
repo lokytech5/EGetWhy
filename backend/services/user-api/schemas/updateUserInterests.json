@@ -1,0 +1,20 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Update User Interests Schema",
+    "required": ["userId", "interests"],
+    "properties": {
+      "userId": {
+        "type": "string",
+        "description": "The unique identifier for the user"
+      },
+      "interests": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "An array of hashtags representing the user's interests"
+      }
+    }
+  }

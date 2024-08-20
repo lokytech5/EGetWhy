@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create the Axios instance
 const authApiClient = axios.create({
-    baseURL: 'https://olikwzthj7.execute-api.us-east-1.amazonaws.com/dev',
+    baseURL: 'https://7806jlbing.execute-api.us-east-1.amazonaws.com/dev',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -39,7 +39,7 @@ authApiClient.interceptors.response.use(
 
 // Create the Axios instance for user-related endpoints
 const userApiClient = axios.create({
-    baseURL: 'https://7j2cjhzih1.execute-api.us-east-1.amazonaws.com/dev',
+    baseURL: 'https://r2xzx59yw5.execute-api.us-east-1.amazonaws.com/dev',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -74,4 +74,41 @@ userApiClient.interceptors.response.use(
     }
 );
 
-export { authApiClient, userApiClient };
+// Create the Axios instance for post-related endpoints
+const postApiClient = axios.create({
+    baseURL: 'https://0zq8xgmvx9.execute-api.us-east-1.amazonaws.com/dev',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true, // Include credentials with requests
+});
+
+// Request interceptor for user-related endpoints
+postApiClient.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token'); // Retrieve token from local storage
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`; // Add token to request headers
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor for user-related endpoints
+postApiClient.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Handle 401 errors globally, e.g., redirect to login
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+export { authApiClient, userApiClient, postApiClient };

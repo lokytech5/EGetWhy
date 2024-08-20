@@ -1,0 +1,13 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Clear User Interests Schema",
+    "required": ["userId"],
+    "properties": {
+      "userId": {
+        "type": "string",
+        "description": "The unique identifier for the user"
+      }
+    }
+  }

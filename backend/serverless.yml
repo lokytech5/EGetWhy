@@ -18,6 +18,7 @@ provider:
     LIKES_TABLE: ${self:custom.likesTableName}
     HASHTAGS_TABLE: ${self:custom.hashtagsTableName}
     RESET_CODES_TABLE: ${self:custom.resetCodesTableName}
+    USER_INTERESTS_TABLE: ${self:custom.userInterestsTableName}
     STAGE: ${self:provider.stage}
     S3_BUCKET_NAME: ${self:custom.bucketName}
 
@@ -41,6 +42,7 @@ provider:
             - Fn::GetAtt: [LikesTable, Arn]
             - Fn::GetAtt: [HashtagsTable, Arn]
             - Fn::GetAtt: [ResetCodesTable, Arn]
+            - Fn::GetAtt: [UserInterestsTable, Arn]
 
 functions:
   api:
@@ -150,6 +152,18 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.resetCodesTableName}
 
+    UserInterestsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: UserID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: UserID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.userInterestsTableName}
+
   Outputs:
     UsersTableArn:
       Value:
@@ -231,6 +245,16 @@ resources:
       Export:
         Name: ResetCodesTableName-${self:provider.stage}
 
+    UserInterestsTableArn:
+      Value:
+        Fn::GetAtt: [UserInterestsTable, Arn]
+      Export:
+        Name: UserInterestsTableArn-${self:provider.stage}
+    UserInterestsTableName:
+      Value: ${self:custom.userInterestsTableName}
+      Export:
+        Name: UserInterestsTableName-${self:provider.stage}
+
 custom:
   usersTableName: "users-table-${self:provider.stage}"
   postsTableName: "posts-table-${self:provider.stage}"
@@ -240,6 +264,7 @@ custom:
   likesTableName: "likes-table-${self:provider.stage}"
   hashtagsTableName: "hashtags-table-${self:provider.stage}"
   resetCodesTableName: "reset-codes-table-${self:provider.stage}"
+  userInterestsTableName: "user-interests-table-${self:provider.stage}"
   bucketName: "egetwhy-bucket-${self:provider.stage}"
   export-env:
     filename: .env
