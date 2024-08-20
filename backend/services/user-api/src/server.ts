@@ -14,7 +14,7 @@ app.get("/users/:userId", validateToken, getUserById);
 app.get("/me", validateToken, getUserProfile);
 app.put("/users/update", validateToken, updateUser);
 app.post("/users/upload-profile-picture", validateToken, fileUpload.single('file'), uploadProfilePicture);
-app.put("/users/:userId/interests", validateToken, updateUserInterests);
+app.put("/users/update-interests", validateToken, updateUserInterests);
 app.get("/users/:userId/interests", validateToken, getUserInterests);
 app.post("/users/:userId/clear-interests", validateToken, clearUserInterests);
 
