@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.post("/api/posts", validateToken, createPost);
 app.get("/api/feed", getAllPosts);
-app.get("api/hashtags/trending", getTrendingHashtags)
+app.get("/api/hashtags/trending", getTrendingHashtags)
 app.get("/api/hashtags/:hashtag/posts", getPostByHashtag);
 app.get("/api/posts/:postId", getPostById);
 app.post("/api/posts/:postId/comments", validateToken, addComment);
