@@ -6,7 +6,7 @@ const Drawer = () => {
     const loading = useUserStore((state) => state.loading);
 
     if (loading) {
-        return null; // or a loading spinner if you want
+        return null;
       }
     
   return (
@@ -40,9 +40,6 @@ const Drawer = () => {
       ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex flex-col justify-center items-center space-y-4 no-underline">
         {/* Sidebar content here */}
-        <li>
-          <a href="/">Home</a>
-        </li>
         <li>
           <a href="/feed">Feed</a>
         </li>

@@ -74,6 +74,18 @@ functions:
               - Content-Type
             allowCredentials: true
 
+  getTrendingHashtags:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/hashtags/trending
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
+
   getPostByHashtag:
     handler: src/server.handler
     events:

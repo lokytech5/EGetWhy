@@ -4,6 +4,8 @@ import { v1 as uuidv1 } from 'uuid';
 import { BatchGetCommand, BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { buildResponse } from "../../../lib/responseUtils";
 
+const POSTS_TABLE = process.env.POSTS_TABLE;
+
 export const createPost = async (req: Request, res: Response) => {
   const { userId, content, hashtags, categoryID, isAnonymous } = req.body;
   const timestamp = new Date().toISOString();
@@ -69,7 +71,7 @@ export const createPost = async (req: Request, res: Response) => {
 
 export const getAllPosts = async (req: Request, res: Response) => {
   const params = {
-    TableName: process.env.POSTS_TABLE!,
+    TableName: POSTS_TABLE!,
   };
 
   try {
@@ -89,7 +91,7 @@ export const getPostById = async (req: Request, res: Response) => {
   const { postId } = req.params;
 
   const params = {
-    TableName: process.env.POSTS_TABLE!,
+    TableName: POSTS_TABLE!,
     Key: {
       PostID: postId
     }
@@ -120,7 +122,7 @@ export const getPostByHashtag = async (req: Request, res: Response) => {
   }
 
   const POSTHASHTAGS_TABLE = process.env.POSTHASHTAGS_TABLE;
-  const POSTS_TABLE = process.env.POSTS_TABLE;
+  
 
   if (!POSTHASHTAGS_TABLE || !POSTS_TABLE) {
     return res.status(500).json({ data: null, meta: { error: "Environment variables not set correctly" } });
@@ -226,3 +228,38 @@ export const likePost = async (req: Request, res: Response) => {
     }
   }
 };
+
+export const getTrendingHashtags = async (req: Request, res: Response) => {
+  const params = {
+    TableName: POSTS_TABLE,
+    ProjectionExpression: "Hashtags",
+  };
+
+  try {
+    const command = new ScanCommand(params);
+    const data = await docClient.send(command);
+
+    const hashtagCounts: { [key: string]: number } = {};
+
+    data.Items?.forEach((item) => {
+      const hashtags = item.Hashtags.split(', ');
+      hashtags.forEach((hashtag: string) => {
+        if (hashtagCounts[hashtag]) {
+          hashtagCounts[hashtag]++;
+        } else {
+          hashtagCounts[hashtag] = 1;
+        }
+      });
+    });
+
+    const trendingHashtags = Object.entries(hashtagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10) // Limit to top 10 trending hashtags
+      .map((entry) => ({ hashtag: entry[0], count: entry[1] }));
+
+    res.status(200).json(buildResponse(trendingHashtags));
+  } catch (error) {
+    console.error('Error getting trending hashtags: ', error);
+    res.status(500).json(buildResponse (null, { error: 'Could not retrieve trending hashtags' }));
+  }
+}

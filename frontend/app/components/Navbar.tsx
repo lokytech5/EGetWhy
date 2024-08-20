@@ -18,13 +18,10 @@ const Navbar = () => {
         <Drawer/>
 
 
-        <a className="btn btn-ghost text-xl">EgetWhy</a>
+        <a href="/" className="btn btn-ghost text-xl">EgetWhy</a>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-          <li>
-            <a href="/">Home</a>
-          </li>
           <li>
             <a href="/feed">Feed</a>
           </li>
