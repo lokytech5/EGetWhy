@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import Providers from './provider'
 import ToastNotify from './components/ToastNotify'
 import UserInitializer from './components/UserInitializer';
+import { montserrat, poppins, roboto } from './fonts';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <Providers>
         <UserInitializer/>
       <div className="min-h-screen bg-base-300 flex flex-col">
