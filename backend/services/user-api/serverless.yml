@@ -92,7 +92,7 @@ functions:
           path: users/update
           method: put
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -108,7 +108,7 @@ functions:
           path: users/update-interests
           method: put
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -124,7 +124,7 @@ functions:
           path: users/{userId}/interests
           method: get
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -137,7 +137,7 @@ functions:
           path: users/{userId}/clear-interests
           method: post
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization

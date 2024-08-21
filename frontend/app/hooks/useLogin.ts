@@ -28,8 +28,7 @@ export const useLogin = () => {
                 const token = data.data.accessToken;
                 localStorage.setItem('token', token);
                 setToken(token);
-
-                if (!userFetched) {
+               
                     try {
                         const profileData = await queryClient.fetchQuery<ProfileResponse, Error>({
                             queryKey: ['profile'],
@@ -43,7 +42,6 @@ export const useLogin = () => {
                     } catch (error) {
                         console.error('Failed to fetch user profile:', error);
                     }
-                }
 
                 router.push('/');
                 showToastSuccess('Login successful!');
