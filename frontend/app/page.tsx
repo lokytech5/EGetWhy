@@ -1,5 +1,6 @@
 import Hero from "./components/Hero";
 import HomePageBanner from "./components/HomePageBanner";
+import Image from "next/image";
 
 
 export default function Home() {
@@ -9,6 +10,29 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero/>
+
+      {/* Additional Section - Trending Hashtags / Discussions */}
+      <div className="container mx-auto py-12">
+        <h3 className="text-2xl md:text-4xl font-bold text-center mb-6">
+          #Trending on EGetWhy
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h4 className="text-lg font-semibold mb-2">#JobScarcity</h4>
+            <p>Explore discussions around the job market in Nigeria and find expert advice on improving job prospects.</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h4 className="text-lg font-semibold mb-2">#FinancialChallenges</h4>
+            <p>Gain insights into dealing with financial issues, and discover local solutions to transaction problems.</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h4 className="text-lg font-semibold mb-2">#CommunitySupport</h4>
+            <p>Join the conversation on mutual support, tackling societal issues, and making your voice heard.</p>
+          </div>
+        </div>
+      </div>
+
+      
 
       {/* Local Knowledge Sharing Section */}
       <section className="bg-white py-20">
@@ -34,20 +58,47 @@ export default function Home() {
 
       
 
-      
-
-      {/* Call to Action Section */}
-      <section className="bg-white py-20 text-black">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Join the EGetWhy? Community</h2>
-          <p className="text-lg mb-6">
-            Become a part of our supportive network. Share your story, find support, and connect with others.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <a href="/register" className="btn bg-green-600 hover:bg-base-300 hover:border-green-600 hover:text-green-600 ">Register Now</a>
+       {/* Community/Engagement Section */}
+       <div className="container mx-auto py-12 bg-base-100">
+        <h3 className="text-2xl md:text-4xl font-bold text-center mb-6">
+          Why Join EGetWhy? Community
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="p-6">
+            <Image
+              src="/images/community-icon.png"
+              alt="Community"
+              width={50}
+              height={50}
+              className="mx-auto"
+            />
+            <h4 className="text-xl font-semibold mt-4">Community and Support</h4>
+            <p className="mt-2">Connect with others, share your experiences, and get the support you need.</p>
+          </div>
+          <div className="p-6">
+            <Image
+              src="/images/info-icon.png"
+              alt="Info"
+              width={50}
+              height={50}
+              className="mx-auto"
+            />
+            <h4 className="text-xl font-semibold mt-4">Actionable Information</h4>
+            <p className="mt-2">Get expert advice and insights on common issues like job scarcity and financial challenges.</p>
+          </div>
+          <div className="p-6">
+            <Image
+              src="/images/engagement-icon.png"
+              alt="Engagement"
+              width={50}
+              height={50}
+              className="mx-auto"
+            />
+            <h4 className="text-xl font-semibold mt-4">Engagement and Interaction</h4>
+            <p className="mt-2">Engage in meaningful conversations and build networks that can help you professionally and personally.</p>
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }
