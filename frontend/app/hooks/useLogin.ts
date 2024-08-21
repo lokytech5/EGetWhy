@@ -38,7 +38,10 @@ export const useLogin = () => {
                             }
                         });
                         setUser(profileData.data);
-                        setUserFetched(true);
+
+                        if(profileData.data) {
+                            setUserFetched(true);       
+                        }
                     } catch (error) {
                         console.error('Failed to fetch user profile:', error);
                     }
