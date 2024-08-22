@@ -20,7 +20,7 @@ const config: Config = {
   ],
   daisyui: {
      // other plugins
-    themes: ["night"],
+    themes: ["winter"],
   },
 }
 export default config

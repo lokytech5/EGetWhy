@@ -13,7 +13,7 @@ const Navbar = () => {
         return null; // or a loading spinner if you want
       }
   return (
-    <div className="navbar bg-base-100 text-neutral-content">
+    <div className="navbar bg-base-200 text-base-content">
       <div className="navbar-start">
         <Drawer/>
 
