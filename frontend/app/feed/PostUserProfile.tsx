@@ -27,7 +27,7 @@ const PostUserProfile = () => {
               />
             ) : (
               <span className="text-2xl font-bold">
-                {userProfile?.fullName ? getInitials(userProfile.fullName) : <FaUser className="h-8 w-8" />}
+                {userProfile?.fullName ? getInitials(userProfile.fullName) : <FaUser className="h-8 w-8 py-4 p-2" />}
               </span>
             )}
           </div>

@@ -40,9 +40,11 @@ const Drawer = () => {
       ></label>
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex flex-col justify-center items-center space-y-4 no-underline">
         {/* Sidebar content here */}
-        <li>
-          <a href="/feed">Feed</a>
-        </li>
+        {isAuthenticated && (
+            <li>
+              <a href="/feed">Feed</a>
+            </li>
+          )}
         <li>
           <a href="/about">About</a>
         </li>
