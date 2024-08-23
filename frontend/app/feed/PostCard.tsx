@@ -2,26 +2,41 @@ import React from 'react';
 import Image from 'next/image';
 import { FaHeart, FaComment, FaShare } from 'react-icons/fa';
 
-interface PostData {
-  data: {
-    PostID: string;
-    UserID: string;
-    Content: string;
-    Hashtags: string;
-    CategoryID: string | null;
-    IsAnonymous: boolean;
-    CreatedAt: string;
-    UpdatedAt: string;
-  };
+interface Post {
+  PostID: string;
+  UserID: string;
+  Content: string;
+  Hashtags: string;
+  CategoryID: string | null;
+  IsAnonymous: boolean;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
 
-const PostCard: React.FC<{ post: PostData }> = ({ post }) => {
-  const { Content, Hashtags, CreatedAt, IsAnonymous } = post.data;
+interface PostCardProps {
+  post: Post;
+}
 
-  const timeAgo = new Date(CreatedAt).toISOString().slice(0, 19).replace("T", " ");
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  const {
+    Content,
+    Hashtags,
+    IsAnonymous,
+    CreatedAt,
+  } = post;
+
+  // Format the date to include AM/PM
+  const formattedDate = new Date(CreatedAt).toLocaleString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,  // Use 12-hour format
+  });
 
   return (
-    <div className="w-full">
+    <div className="w-full mb-4">
       <div className="bg-[#1c2b3a] shadow-lg rounded-lg p-6 text-white">
         {/* User Info and Timestamp */}
         <div className="flex items-center justify-between mb-4">
@@ -38,7 +53,7 @@ const PostCard: React.FC<{ post: PostData }> = ({ post }) => {
               <span className="text-xs text-gray-400">Jobs in Tech</span>
             </div>
           </div>
-          <span className="text-xs text-gray-400">{timeAgo}</span>
+          <span className="text-xs text-gray-400">{formattedDate}</span>
         </div>
 
         {/* Post Content */}
@@ -73,6 +88,6 @@ const PostCard: React.FC<{ post: PostData }> = ({ post }) => {
       </div>
     </div>
   );
-}
+};
 
 export default PostCard;

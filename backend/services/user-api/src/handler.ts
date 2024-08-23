@@ -223,7 +223,7 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
       if (data.Item) {
         res.status(200).json(buildResponse(data.Item));
       } else {
-        res.status(404).json(buildResponse(null, { error: 'User interests not found' }));
+        res.status(200).json(buildResponse({ UserID: userId, Interests: [] }));
       }
     } catch (error) {
       console.error('Error fetching user interests:', error);

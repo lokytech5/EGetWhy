@@ -90,3 +90,17 @@ export interface MyInterestsResponse {
     },
     meta: Record<string, never>
 }
+
+export interface PostFeedResponse {
+    data: {
+        UpdatedAt: string;
+        PostID: string;
+        UserID: string;
+        CategoryID: string | null;
+        Content: string;
+        Hashtags: string;
+        CreatedAt: string;
+        IsAnonymous: boolean;
+    }[];
+    meta: Record<string, never>;
+}

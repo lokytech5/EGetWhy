@@ -22,15 +22,15 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-        {/* {isAuthenticated && (
+        {isAuthenticated && (
             <li>
               <a href="/feed">Feed</a>
             </li>
-          )} */}
+          )}
 
-           <li>
+           {/* <li>
               <a href="/feed">Feed</a>
-            </li>
+            </li> */}
 
           <li>
             <a href="/about">About</a>

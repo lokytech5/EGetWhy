@@ -7,6 +7,7 @@ import CustomModal from '../components/CustomModal';
 import TrendingHashtags from './TrendingHashtags';
 import MyInterests from './MyInterests';
 import PostUserProfile from './PostUserProfile';
+import usePostFeeds from '../hooks/usePostFeeds';
 
 const FeedPage = () => {
 
@@ -22,7 +23,7 @@ const FeedPage = () => {
       UpdatedAt: "2024-08-22"
     }
   };
-
+  const { data, isLoading, error } = usePostFeeds();
   const [showModal, setShowModal] = useState(false);
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -46,7 +47,9 @@ const FeedPage = () => {
       {/* Feed Section */}
       <div className="w-full md:w-1/2 p-4">
         <Post onClick={handleOpenModal} />
-        <PostCard post={dummyPostData} />
+        {data?.data.map((post) => (
+         <PostCard key={post.PostID} post={post} />
+        ))}
       </div>
 
       {/* Trending Hashtags Section */}
