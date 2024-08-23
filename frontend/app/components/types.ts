@@ -85,8 +85,8 @@ export interface TrendingHashtagResponse {
 
 export interface MyInterestsResponse {
     data: {
-        interests: [string]
-        userID: string;
+        Interests: string[];
+        UserID: string;
     },
     meta: Record<string, never>
 }
