@@ -12,7 +12,7 @@ interface ErrorResponse {
 const usePost = () => {
     return useMutation<PostResponse, AxiosError<ErrorResponse>, PostData>(
         async (postData: PostData) => {
-            const response = await postApiClient.post<PostResponse>('/posts', postData);
+            const response = await postApiClient.post<PostResponse>('/api/posts', postData);
             return response.data;
         },
         {

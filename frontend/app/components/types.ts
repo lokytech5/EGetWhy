@@ -106,7 +106,7 @@ export interface PostFeedResponse {
 }
 
 export interface PostData {
-    userId: string;
+    userId: string | undefined;
     content: string;
     hashtags: string[];
     isAnonymous: boolean;

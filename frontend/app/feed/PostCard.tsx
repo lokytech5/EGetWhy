@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { FaHeart, FaComment, FaShare } from 'react-icons/fa';
 
-interface Post {
+export interface Post {
   PostID: string;
   UserID: string;
   Content: string;
