@@ -3,6 +3,7 @@ import React from 'react'
 import Image from "next/image";
 import Link from 'next/link';
 import LogoutButton from './LogoutButton';
+import { FaUser } from "react-icons/fa";
 import { useUserStore } from './useUserStore';
 
 const UserMenu = () => {
@@ -43,13 +44,9 @@ const UserMenu = () => {
           className="btn btn-ghost btn-circle avatar"
         >
           <div className="w-10 rounded-full">
-            <Image
-              alt="User Profile"
-              src="/images/avatar.svg"
-              width={40}
-              height={40}
-              className="rounded-full bg-white"
-            />
+          <div className="w-10  rounded-full">
+                   <FaUser className="h-8 w-8"/>
+                  </div>
           </div>
         </button>
         <ul
