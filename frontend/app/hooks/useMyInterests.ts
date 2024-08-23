@@ -5,7 +5,7 @@ import { MyInterestsResponse } from '../components/types';
 import { useQuery } from '@tanstack/react-query';
 
 const useMyInterests = () => {
-    const userId = useUserStore((state) => state.user);
+    const userId = useUserStore((state) => state.user?.userId);
 
     const fetchMyInterests = async (): Promise<MyInterestsResponse> => {
         if(!userId) {
