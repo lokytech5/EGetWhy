@@ -23,14 +23,6 @@ const FeedPage = () => {
     }
   };
 
-  const userData = {
-    data: {
-      Interests: ["#Tech", "#nawa", "#test", "#Programming"],
-      UserID: "646844d8-f021-7050-cd80-15f357d4c269"
-    },
-    meta: {}
-  };
-
   const [showModal, setShowModal] = useState(false);
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -47,7 +39,7 @@ const FeedPage = () => {
       <PostUserProfile/>
         {/* My Interests Section */}
         <div className="hidden md:block mt-6">
-          <MyInterests interests={userData.data.Interests} />
+          <MyInterests/>
         </div>
       </div>
 

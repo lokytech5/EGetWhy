@@ -46,7 +46,7 @@ export const useLogin = () => {
                         console.error('Failed to fetch user profile:', error);
                     }
 
-                router.push('/');
+                router.push('/feed');
                 showToastSuccess('Login successful!');
             },
 
