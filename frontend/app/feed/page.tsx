@@ -6,6 +6,7 @@ import Post from './Post';
 import CustomModal from '../components/CustomModal';
 import TrendingHashtags from './TrendingHashtags';
 import MyInterests from './MyInterests';
+import PostUserProfile from './PostUserProfile';
 
 const FeedPage = () => {
 
@@ -47,32 +48,8 @@ const FeedPage = () => {
       
       {/* User Profile Section */}
       <div className="w-full md:w-1/4 mt-4 mr-4">
-        <div className="bg-white shadow-lg rounded-lg p-6 text-gray-900 transition-transform transform hover:scale-105">
-          
-          {/* Profile Card */}
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="avatar">
-              <div className="w-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white shadow-lg">
-                <span className="text-2xl">MH</span>
-              </div>
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">Mr Holmes</h2>
-              <p className="text-sm text-gray-600">Software Developer at Newco</p>
-            </div>
-          </div>
-          
-          {/* Posting as Section */}
-          <div className="bg-gray-200 p-2 rounded-lg flex items-center space-x-2">
-            <div className="avatar">
-              <div className="w-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white shadow-lg">
-                <span className="text-sm">MH</span>
-              </div>
-            </div>
-            <span className="text-sm">Posting as: Mr Holmes</span>
-          </div>
-        </div>
 
+      <PostUserProfile/>
         {/* My Interests Section */}
         <div className="hidden md:block mt-6">
           <MyInterests interests={userData.data.Interests} />
