@@ -53,7 +53,7 @@ functions:
           path: api/posts
           method: post
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -69,9 +69,10 @@ functions:
           path: api/feed
           method: get
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
+              - Authorization
             allowCredentials: true
 
   getTrendingHashtags:
@@ -81,9 +82,10 @@ functions:
           path: api/hashtags/trending
           method: get
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
+              - Authorization
             allowCredentials: true
 
   getPostByHashtag:
@@ -93,9 +95,10 @@ functions:
           path: api/hashtags/{hashtag}/posts
           method: get
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
+              - Authorization
             allowCredentials: true
 
   getPostById:
@@ -105,9 +108,10 @@ functions:
           path: api/posts/{postId}
           method: get
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
+              - Authorization
             allowCredentials: true
 
   addComment:
@@ -117,7 +121,7 @@ functions:
           path: api/posts/{postId}/comments
           method: post
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
@@ -133,7 +137,7 @@ functions:
           path: api/posts/{postId}/like
           method: post
           cors:
-            origin: '*'
+            origin: "http://localhost:3000"
             headers:
               - Content-Type
               - Authorization
