@@ -45,9 +45,11 @@ const Drawer = () => {
               <a href="/feed">Feed</a>
             </li>
           )}
+
         <li>
           <a href="/about">About</a>
         </li>
+        
         {!isAuthenticated && (
             <>
           
