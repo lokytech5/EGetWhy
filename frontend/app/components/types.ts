@@ -104,3 +104,26 @@ export interface PostFeedResponse {
     }[];
     meta: Record<string, never>;
 }
+
+export interface PostData {
+    userId: string;
+    content: string;
+    hashtags: string[];
+    isAnonymous: boolean;
+}
+
+export interface PostResponse {
+    data: {
+        postId: string;  
+        userId: string;
+        categoryId: string | null;
+        content: string;
+        hashtags: string;
+        isAnonymous: boolean;
+        createdAt: string;
+        updatedAt: string;
+    },
+    meta:Record<string, never>
+}
+
+
