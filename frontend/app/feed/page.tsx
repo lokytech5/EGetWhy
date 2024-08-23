@@ -23,11 +23,6 @@ const FeedPage = () => {
     }
   };
 
-  const hashtagsData = [
-    { hashtag: "#Internet", count: 2 },
-    { hashtag: "#nawa", count: 2 },
-  ];
-
   const userData = {
     data: {
       Interests: ["#Tech", "#nawa", "#test", "#Programming"],
@@ -64,7 +59,7 @@ const FeedPage = () => {
 
       {/* Trending Hashtags Section */}
       <div className="hidden md:block w-full md:w-1/4">
-        <TrendingHashtags hashtags={hashtagsData} />
+        <TrendingHashtags />
       </div>
 
       {/* Modal for creating post */}

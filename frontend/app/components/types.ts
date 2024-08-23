@@ -72,3 +72,13 @@ export interface ProfileUpdateData {
     bio?: string;
     location?: string;
 }
+
+export interface TrendingHashtagResponse {
+    data: [
+        {
+            hashtag: string;
+            count: number;
+        }
+    ],
+    meta: Record<string, never>
+}
