@@ -93,14 +93,14 @@ export interface MyInterestsResponse {
 
 export interface PostFeedResponse {
     data: {
-        updatedAt: string;
-        postId: string;
-        userId: string;
-        categoryId: string | null;
-        content: string;
-        hashtags: string;
-        createdAt: string;
-        isAnonymous: boolean;
+        PostID: string;
+  UserID: string;
+  Content: string;
+  Hashtags: string;
+  CategoryID: string | null;
+  IsAnonymous: boolean;
+  CreatedAt: string;
+  UpdatedAt: string;
     }[];
     meta: Record<string, never>;
 }
