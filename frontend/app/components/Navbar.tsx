@@ -9,9 +9,9 @@ const Navbar = () => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated );
   const loading = useUserStore((state) => state.loading);
 
-    if (loading) {
-        return null; // or a loading spinner if you want
-      }
+    // if (loading) {
+    //     return null;
+    //   }
   return (
     <div className="navbar bg-base-200 text-base-content">
       <div className="navbar-start">
@@ -22,15 +22,15 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-        {/* {isAuthenticated && (
+        {isAuthenticated && (
             <li>
               <a href="/feed">Feed</a>
             </li>
-          )} */}
+          )}
 
-           <li>
+           {/* <li>
               <a href="/feed">Feed</a>
-            </li>
+            </li> */}
 
           <li>
             <a href="/about">About</a>
