@@ -81,7 +81,7 @@ functions:
           cors: 
             origin: "http://localhost:3000"
             headers:
-             - Content-Type
+              - Content-Type
               - Authorization
               - X-Amz-Date
               - X-Api-Key
