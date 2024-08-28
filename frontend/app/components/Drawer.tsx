@@ -41,9 +41,15 @@ const Drawer = () => {
       <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex flex-col justify-center items-center space-y-4 no-underline">
         {/* Sidebar content here */}
         {isAuthenticated && (
-            <li>
-              <a href="/feed">Feed</a>
-            </li>
+            <>
+              <li>
+                <a href="/feed">Feed</a>
+              </li>
+              {/* Add Communities Link */}
+              <li>
+                <a href="/communities">Communities</a>
+              </li>
+            </>
           )}
 
         <li>

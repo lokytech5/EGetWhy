@@ -3,7 +3,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "title": "Create Post Schema",
-    "required": ["userId", "content"],
+    "required": ["userId", "content", "hashtags"],
     "properties": {
       "userId": {
         "type": "string"
@@ -16,6 +16,7 @@
         "items": {
           "type": "string"
         },
+        "minItems": 1,
         "default": []
       },
       "isAnonymous": {

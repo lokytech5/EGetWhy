@@ -30,14 +30,17 @@ const Post = ({ onClick }: Props) => {
             )}
           </div>
         </div>
-        <div className="flex-grow">
-          <input
-            type="text"
-            className="w-full bg-[#1c2b3a] text-gray-300 border border-gray-600 rounded-full px-4 py-2 focus:outline-none"
-            placeholder="Start a post, try writing with AI"
-            readOnly
-            onClick={onClick}
-          />
+        <div className="flex-grow relative">
+          {/* DaisyUI Tooltip */}
+          <div className="tooltip tooltip-secondary" data-tip="Click to start writing a post. Remember to add at least one hashtag to categorize your post!">
+            <input
+              type="text"
+              className="w-full bg-[#1c2b3a] text-gray-300 border border-gray-600 rounded-full px-4 py-2 focus:outline-none"
+              placeholder="Start a post, try writing with AI"
+              readOnly
+              onClick={onClick}
+            />
+          </div>
         </div>
       </div>
     </div>

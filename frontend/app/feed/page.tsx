@@ -18,7 +18,9 @@ const FeedPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [postContent, setPostContent] = useState('');
   const [hashtags, setHashtags] = useState<string[]>([]);
+  const [isAnonymous, setIsAnonymous] = useState(false); // State for anonymous posting
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: createPost } = usePost();
   const userId = useUserStore((state) => state.user?.userId);
   const userProfile = useUserStore((state) => state.user);
@@ -36,20 +38,29 @@ const FeedPage = () => {
     }
   }, [data]);
 
-  const handleOpenModal = () => setShowModal(true);
+  const handleOpenModal = () => {
+    setShowModal(true);
+    setErrorMessage(null); // Reset error message when opening the modal
+  };
+  
   const handleCloseModal = () => setShowModal(false);
 
   const handlePostSubmit = () => {
     if (!postContent.trim()) {
-      alert("Post content cannot be empty.");
+      setErrorMessage("Post content cannot be empty.");
+      return;
+    }
+    
+    if (hashtags.length === 0) {
+      setErrorMessage("Please enter at least one hashtag.");
       return;
     }
 
     const postData = {
-      userId,
+      userId: isAnonymous ? 'ANONYMOUS' : userId || '',  // Use 'ANONYMOUS' if posting anonymously
       content: postContent,
       hashtags: hashtags,
-      isAnonymous: false,
+      isAnonymous: isAnonymous,
     };
 
     const tempId = Date.now().toString();
@@ -57,11 +68,11 @@ const FeedPage = () => {
     // Create an optimistic post object
     const optimisticPost: PostInterface = {
       PostID: tempId, 
-      UserID: userId || '',
+      UserID: postData.userId,
       Content: postContent,
       Hashtags: hashtags.join(', '),
       CategoryID: null,
-      IsAnonymous: false,
+      IsAnonymous: isAnonymous,
       CreatedAt: new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
     };
@@ -78,6 +89,7 @@ const FeedPage = () => {
         setShowModal(false);
         setPostContent('');
         setHashtags([]);
+        setIsAnonymous(false); // Reset the anonymous state after submitting
         setIsSubmitting(false);
 
         setPosts((currentPosts) =>
@@ -89,6 +101,7 @@ const FeedPage = () => {
       onError: (error) => {
         console.error('Failed to create post:', error);
         setIsSubmitting(false);
+        setErrorMessage('Failed to create post. Please try again.');
 
         // Remove the optimistic post if the API call fails
         setPosts((currentPosts) => currentPosts.filter((post) => post.PostID !== tempId));
@@ -138,36 +151,55 @@ const FeedPage = () => {
 
       {/* Modal for creating post */}
       <CustomModal
-  title="Create a Post"
-  content={
-    <>
-      {isSubmitting ? (
-        <div className="flex justify-center items-center">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        <>
-          <textarea
-            className="w-full p-4 bg-gray-800 text-gray-100 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="What's on your mind?"
-            rows={5}
-            value={postContent}
-            onChange={(e) => setPostContent(e.target.value)}
-          ></textarea>
-          <input
-            type="text"
-            className="w-full p-2 bg-gray-800 text-gray-100 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
-            placeholder="Enter hashtags separated by commas"
-            onChange={(e) => setHashtags(e.target.value.split(',').map(tag => tag.trim()))}
-          />
-        </>
-      )}
-    </>
-  }
-  isOpen={showModal}
-  onClose={handleCloseModal}
-  onConfirm={handlePostSubmit}
-/>
+        title="Create a Post"
+        content={
+          <>
+            {isSubmitting ? (
+              <div className="flex justify-center items-center">
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <>
+                {errorMessage && (
+                  <div className="text-red-500 text-center mb-4">{errorMessage}</div>
+                )}
+                <textarea
+                  className="w-full p-4 bg-gray-800 text-gray-100 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="What's on your mind?"
+                  rows={5}
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                ></textarea>
+                <input
+                  type="text"
+                  className="w-full p-2 bg-gray-800 text-gray-100 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                  placeholder="Enter hashtags separated by commas"
+                  onChange={(e) => setHashtags(e.target.value.split(',').map(tag => tag.trim()))}
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  Add hashtags to help others discover your post. Use commas to separate multiple hashtags.
+                </p>
+                {/* Anonymous Posting Checkbox */}
+                <div className="mt-4 flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="anonymous-checkbox" 
+                    checked={isAnonymous}
+                    onChange={() => setIsAnonymous(!isAnonymous)} 
+                    className="mr-2 cursor-pointer"
+                  />
+                  <label htmlFor="anonymous-checkbox" className="text-gray-300 cursor-pointer">
+                    Post Anonymously
+                  </label>
+                </div>
+              </>
+            )}
+          </>
+        }
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onConfirm={handlePostSubmit}
+      />
     </div>
   );
 };

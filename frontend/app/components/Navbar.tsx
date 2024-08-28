@@ -23,9 +23,15 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
         {isAuthenticated && (
-            <li>
-              <a href="/feed">Feed</a>
-            </li>
+            <>
+              <li>
+                <a href="/feed">Feed</a>
+              </li>
+              {/* Add Communities Link */}
+              <li>
+                <a href="/communities">Communities</a>
+              </li>
+            </>
           )}
 
            {/* <li>
