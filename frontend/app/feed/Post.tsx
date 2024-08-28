@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useUserStore } from '../components/useUserStore';
-import { extractUserInitials } from '../utils/userInitials'; // Import the utility function
+import { extractUserInitials } from '../utils/userInitials';
 
 interface Props {
   onClick: () => void;

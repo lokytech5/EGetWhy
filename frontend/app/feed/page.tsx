@@ -9,7 +9,6 @@ import { useUserStore } from '../components/useUserStore';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorAlert from '../components/ErrorAlert';
 import { Post as PostInterface } from '../feed/PostCard';
-import { parseISO } from 'date-fns';
 import PostUserProfile from './PostUserProfile';
 import MyInterests from './MyInterests';
 import TrendingHashtags from './TrendingHashtags';
@@ -22,18 +21,16 @@ const FeedPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutate: createPost } = usePost();
   const userId = useUserStore((state) => state.user?.userId);
-  const userProfile = useUserStore((state) => state.user);  // Get user profile
+  const userProfile = useUserStore((state) => state.user);
 
   const [posts, setPosts] = useState<PostInterface[]>([]);
 
   useEffect(() => {
     if (data) {
       console.log('Fetched data:', data);
-      
-      // Flatten all pages' data and sort by CreatedAt
-      const combinedPosts = data.pages.flatMap(page => page.posts || []); // Access page.posts
+      const combinedPosts = data.pages.flatMap(page => page.posts || []);
       const sortedPosts = combinedPosts
-        .filter(post => post?.PostID) // Filter out any posts that do not have a PostID
+        .filter(post => post?.PostID)
         .sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime());
       setPosts(sortedPosts);
     }
@@ -55,12 +52,11 @@ const FeedPage = () => {
       isAnonymous: false,
     };
 
-    // Generate a temporary ID for the optimistic post
     const tempId = Date.now().toString();
 
     // Create an optimistic post object
     const optimisticPost: PostInterface = {
-      PostID: tempId,  // Temporary ID
+      PostID: tempId, 
       UserID: userId || '',
       Content: postContent,
       Hashtags: hashtags.join(', '),
@@ -84,7 +80,6 @@ const FeedPage = () => {
         setHashtags([]);
         setIsSubmitting(false);
 
-        // Replace the optimistic post with the actual post from the server
         setPosts((currentPosts) =>
           currentPosts.map((post) =>
             post.PostID === tempId ? { ...optimisticPost, ...newPostData.data } : post

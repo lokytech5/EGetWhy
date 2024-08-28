@@ -15,10 +15,9 @@ const usePostFeeds = () => {
 
   return useInfiniteQuery<PostFeedResponse>(
     ['posts'], 
-    ({ pageParam = null }) => fetchPostFeeds({ pageParam }), // Fetch function with page parameter
+    ({ pageParam = null }) => fetchPostFeeds({ pageParam }),
     {
       getNextPageParam: (lastPage) => {
-        // Ensure meta and lastKey exist before attempting to access them
         if (lastPage && lastPage.lastKey) {
           return lastPage.lastKey;
         }
