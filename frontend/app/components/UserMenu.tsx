@@ -1,15 +1,17 @@
-"use client"
-import React from 'react'
-import Image from "next/image";
+"use client";
+import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import LogoutButton from './LogoutButton';
-import { FaUser } from "react-icons/fa";
+import { FaUser } from 'react-icons/fa';
 import { useUserStore } from './useUserStore';
+import { extractUserInitials } from '../utils/userInitials'; // Import the utility function
 
 const UserMenu = () => {
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated );
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const userProfile = useUserStore((state) => state.user);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !userProfile) {
     return null;
   }
 
@@ -43,10 +45,20 @@ const UserMenu = () => {
           role="button"
           className="btn btn-ghost btn-circle avatar"
         >
-          <div className="w-10 rounded-full">
-          <div className="w-10  rounded-full">
-                   <FaUser className="h-8 w-8"/>
-                  </div>
+          <div className="w-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+            {userProfile?.profilePictureURL ? (
+              <Image 
+                src={userProfile.profilePictureURL} 
+                alt={`${userProfile.fullName}'s profile`} 
+                width={40} 
+                height={40} 
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-xl font-bold text-white">
+                {userProfile?.fullName ? extractUserInitials(userProfile.fullName) : <FaUser className="h-8 w-8" />}
+              </span>
+            )}
           </div>
         </button>
         <ul
@@ -64,7 +76,7 @@ const UserMenu = () => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default UserMenu;

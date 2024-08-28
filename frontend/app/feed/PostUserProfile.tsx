@@ -1,16 +1,10 @@
 import React from 'react';
 import { useUserStore } from '../components/useUserStore';
 import { FaUser } from 'react-icons/fa';
+import { extractUserInitials } from '../utils/userInitials';
 
 const PostUserProfile = () => {
   const userProfile = useUserStore((state) => state.user);
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((part) => part[0].toUpperCase())
-      .join('');
-  };
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 text-gray-900 transition-transform transform hover:scale-105">
@@ -27,8 +21,8 @@ const PostUserProfile = () => {
               />
             ) : (
               <span className="text-2xl font-bold">
-                {userProfile?.fullName ? getInitials(userProfile.fullName) : <FaUser className="h-8 w-8 py-4 p-2" />}
-              </span>
+              {userProfile?.fullName ? extractUserInitials(userProfile.fullName) : <FaUser className="h-8 w-8 py-4 p-2" />}
+            </span>
             )}
           </div>
         </div>

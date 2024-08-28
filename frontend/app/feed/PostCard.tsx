@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { FaHeart, FaComment, FaShare } from 'react-icons/fa';
 import { format, parseISO } from 'date-fns';
 import { FaUser } from 'react-icons/fa';
+import { extractUserInitials } from '../utils/userInitials';
 
 export interface Post {
   PostID: string;
@@ -33,13 +34,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
     CreatedAt,
   } = post;
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((part) => part[0].toUpperCase())
-      .join('');
-  };
-
   // Format the date using date-fns
   const formattedDate = CreatedAt 
     ? format(parseISO(CreatedAt), "MM/dd/yyyy, hh:mm a") // e.g., "08/24/2024, 10:44 AM"
@@ -63,7 +57,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
                   />
                 ) : (
                   <span className="text-sm font-bold">
-                    {getInitials(userProfile.fullName)}
+                    {extractUserInitials(userProfile.fullName)}
                   </span>
                 )}
               </div>
