@@ -70,14 +70,30 @@ export const createPost = async (req: Request, res: Response) => {
 };
 
 export const getAllPosts = async (req: Request, res: Response) => {
-  const params = {
+  const { limit, lastKey } = req.query;
+
+  const params: {
+    TableName: string;
+    Limit: number;
+    ExclusiveStartKey?: Record<string, any>; // Optional field to handle pagination key
+  } = {
     TableName: POSTS_TABLE!,
+    Limit: limit ? parseInt(limit as string) : 10,
   };
+
+  if (lastKey) {
+    params.ExclusiveStartKey = JSON.parse(lastKey as string);
+  }
 
   try {
     const command = new ScanCommand(params);
     const data = await docClient.send(command);
-    res.status(200).json(buildResponse(data.Items));
+
+    res.status(200).json({
+  posts: data.Items,
+  lastKey: data.LastEvaluatedKey || null,
+});
+
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json(buildResponse(null, { error: `Error getting posts: ${error.message}` }));
