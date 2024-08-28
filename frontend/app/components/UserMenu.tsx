@@ -45,7 +45,7 @@ const UserMenu = () => {
           role="button"
           className="btn btn-ghost btn-circle avatar"
         >
-          <div className="w-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+          <div className="w-10 px-2 p-1 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
             {userProfile?.profilePictureURL ? (
               <Image 
                 src={userProfile.profilePictureURL} 

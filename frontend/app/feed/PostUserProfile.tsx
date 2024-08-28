@@ -12,7 +12,7 @@ const PostUserProfile = () => {
       {/* Profile Card */}
       <div className="flex items-center space-x-4 mb-4">
         <div className="avatar">
-          <div className="w-16 h-16 py-4 p-2 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white shadow-lg">
+          <div className="w-16 h-16 py-4 p-4 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white shadow-lg">
             {userProfile?.profilePictureURL ? (
               <img 
                 src={userProfile.profilePictureURL} 

@@ -46,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="avatar">
-              <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+              <div className="w-8 h-8 px-2 p-1 rounded-full bg-gray-700 flex items-center justify-center">
                 {userProfile.profilePictureURL ? (
                   <Image 
                     src={userProfile.profilePictureURL} 

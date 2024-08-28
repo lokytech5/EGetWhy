@@ -14,7 +14,7 @@ const Post = ({ onClick }: Props) => {
     <div className="w-full p-4 mb-4 bg-[#1c2b3a] shadow-lg rounded-lg text-white flex flex-col space-y-4 cursor-pointer">
       <div className="flex items-center space-x-4">
         <div className="avatar">
-          <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 px-3 p-2 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
             {userProfile?.profilePictureURL ? (
               <Image 
                 src={userProfile.profilePictureURL} 
