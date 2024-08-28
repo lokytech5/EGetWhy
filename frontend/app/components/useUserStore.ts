@@ -24,6 +24,8 @@ interface UserState {
   initializeUser: () => void;
   persistUser: () => void;
   clearUser: () => void;
+  setUserProfilePicture: (profilePictureURL: string) => void;
+  updateUserProfile: (updatedFields: Partial<User>) => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -37,6 +39,28 @@ export const useUserStore = create<UserState>((set, get) => ({
   setToken: (token) => set({ token }),
   setIsVerified: (verified) => set({ verified }),
   setUserFetched: (fetched) => set({ userFetched: fetched }),
+  
+  setUserProfilePicture: (profilePictureURL: string) => {
+    const user = get().user;
+    if (user) {
+      set({
+        user: { ...user, profilePictureURL },
+      });
+    }
+  },
+
+  updateUserProfile: (updatedFields: Partial<User>) => {
+    set((state) => {
+      if (state.user) {
+        return {
+          user: { ...state.user, ...updatedFields },
+        };
+      } else {
+        return state;
+      }
+    });
+  },
+
   clearUser: () => set({ user: null, token: null, verified: false, isAuthenticated: false, userFetched: false }),
 
   initializeUser: () => {
@@ -65,5 +89,4 @@ export const useUserStore = create<UserState>((set, get) => ({
     const { user, token } = get();
     localStorage.setItem('user', JSON.stringify({ user, token }));
   },
-  
 }));
