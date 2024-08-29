@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaHeart, FaComment, FaShare } from 'react-icons/fa';
 import { format, parseISO } from 'date-fns';
 import { extractUserInitials } from '../utils/userInitials';
 import useLikes from '../hooks/useLikes';
+import usePostLikes from '../hooks/usePostLikes'; // Import the new hook
 
 interface Comment {
   commentId: string;
@@ -50,8 +51,18 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
 
   const formattedDate = CreatedAt ? format(parseISO(CreatedAt), "MM/dd/yyyy, hh:mm a") : 'Invalid Date';
 
-  // Use the useLikes hook
+  // Fetch initial likes data using the hook
+  const { data: postLikes, isLoading } = usePostLikes(PostID);
+
+  // Use the useLikes hook for mutation
   const { mutate: likePost } = useLikes();
+
+  useEffect(() => {
+    if (postLikes) {
+      setLikesCount(postLikes.data.totalLikes);
+      setHasLiked(postLikes.data.userHasLiked);
+    }
+  }, [postLikes]);
 
   const handleAddComment = () => {
     if (newComment.trim() && wordsLeft >= 0) {
