@@ -117,4 +117,18 @@ export interface RegisterData {
     };
     meta: Record<string, never>;
   }
+
+  export interface LikeData {
+    userId: string | undefined;
+    postId: string;
+  }
+
+  export interface LikeResponse {
+    data: {
+      LikeID: string;
+      PostId: string;
+      UserId: string;
+    }; 
+    meta: Record<string, never>;
+  }
   
