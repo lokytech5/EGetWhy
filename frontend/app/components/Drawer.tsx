@@ -47,7 +47,7 @@ const Drawer = () => {
               </li>
               {/* Add Communities Link */}
               <li>
-                <a href="/communities">Communities</a>
+                <a href="/community">Communities</a>
               </li>
             </>
           )}
