@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react';
+import Image from 'next/image'; // Import Image component
 
 // Dummy data for communities
 const dummyCommunities = [
@@ -64,7 +65,14 @@ const CommunitiesPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredCommunities.map((community) => (
           <div key={community.communityId} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200">
-            <img src={community.image} alt={community.name} className="w-full h-40 object-cover" />
+            {/* Replace <img> with <Image> */}
+            <Image 
+              src={community.image} 
+              alt={community.name} 
+              width={400} // Provide appropriate width
+              height={160} // Provide appropriate height
+              className="w-full h-40 object-cover" 
+            />
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-2">{community.name}</h2>
               <p className="text-sm text-gray-500 mb-4">{community.members} Members</p>

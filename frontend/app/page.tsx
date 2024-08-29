@@ -1,7 +1,6 @@
 import { FaBrain, FaBriefcase, FaHandsHelping } from "react-icons/fa";
 import Hero from "./components/Hero";
 import HomePageBanner from "./components/HomePageBanner";
-import Image from "next/image";
 
 
 export default function Home() {

@@ -15,7 +15,7 @@ export const useVerify = () => {
             return response.data;
         },
         {
-            onSuccess: (data) => {
+            onSuccess: () => {
                 showToastSuccess('Verification successful! You can now log in.');
             },
             onError:(error: AxiosError<ErrorResponse>) => {

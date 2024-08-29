@@ -1,4 +1,3 @@
-import React from 'react'
 import { PostData, PostResponse } from '../components/types'
 import { AxiosError } from 'axios'
 import { postApiClient } from '../utils/apiClient'

@@ -14,7 +14,6 @@ export const useLogin = () => {
     const setUser = useUserStore.getState().setUser;
     const setToken = useUserStore.getState().setToken;
     const setUserFetched = useUserStore.getState().setUserFetched;
-    const userFetched = useUserStore.getState().userFetched;
     const queryClient = useQueryClient();
     const router = useRouter();
 

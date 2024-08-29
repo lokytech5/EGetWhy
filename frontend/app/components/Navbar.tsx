@@ -9,9 +9,9 @@ const Navbar = () => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated );
   const loading = useUserStore((state) => state.loading);
 
-    // if (loading) {
-    //     return null;
-    //   }
+    if (loading) {
+        return null;
+      }
   return (
     <div className="navbar bg-base-200 text-base-content">
       <div className="navbar-start">

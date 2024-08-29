@@ -18,7 +18,7 @@ const useLikes = () => {
       return response.data;
     },
     {
-      onError: (error: AxiosError<ErrorResponse>, likeData, context: any) => {
+      onError: (error: AxiosError<ErrorResponse>, _likeData, _context) => {
         if (error.response && error.response.data) {
           showToastError(`Error: ${error.response.data.error}`);
         } else {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { userApiClient } from '../utils/apiClient'
 import { useUserStore } from '../components/useUserStore'
 import { MyInterestsResponse } from '../components/types';

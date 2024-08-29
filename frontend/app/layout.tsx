@@ -1,15 +1,12 @@
 import './globals.css'
 import 'react-toastify/dist/ReactToastify.css';
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Providers from './provider'
 import ToastNotify from './components/ToastNotify'
 import UserInitializer from './components/UserInitializer';
-import { montserrat, poppins, roboto } from './fonts';
-
-const inter = Inter({ subsets: ['latin'] })
+import { roboto } from './fonts';
 
 export const metadata: Metadata = {
   title: 'Create Next App',

@@ -16,7 +16,7 @@ export const useRegister = () => {
             return response.data;
         },
         {
-            onSuccess: (data) => {
+            onSuccess: () => {
                 showToastSuccess('Registration successful!');
 
             },

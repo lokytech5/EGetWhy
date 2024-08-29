@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image'; // Import Image component
 import { useUserStore } from '../components/useUserStore';
 import { FaUser } from 'react-icons/fa';
 import { extractUserInitials } from '../utils/userInitials';
@@ -14,15 +15,17 @@ const PostUserProfile = () => {
         <div className="avatar">
           <div className="w-16 h-16 py-4 p-4 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white shadow-lg">
             {userProfile?.profilePictureURL ? (
-              <img 
+              <Image 
                 src={userProfile.profilePictureURL} 
                 alt={`${userProfile.fullName}'s profile`} 
-                className="rounded-full w-full h-full object-cover"
+                width={64} // Set an appropriate width
+                height={64} // Set an appropriate height
+                className="rounded-full object-cover"
               />
             ) : (
               <span className="text-2xl font-bold">
-              {userProfile?.fullName ? extractUserInitials(userProfile.fullName) : <FaUser className="h-8 w-8 py-4 p-2" />}
-            </span>
+                {userProfile?.fullName ? extractUserInitials(userProfile.fullName) : <FaUser className="h-8 w-8 py-4 p-2" />}
+              </span>
             )}
           </div>
         </div>

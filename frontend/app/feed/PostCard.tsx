@@ -52,7 +52,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   const formattedDate = CreatedAt ? format(parseISO(CreatedAt), "MM/dd/yyyy, hh:mm a") : 'Invalid Date';
 
   // Fetch initial likes data using the hook
-  const { data: postLikes, isLoading } = usePostLikes(PostID);
+  const { data: postLikes } = usePostLikes(PostID);
 
   // Use the useLikes hook for mutation
   const { mutate: likePost } = useLikes();
