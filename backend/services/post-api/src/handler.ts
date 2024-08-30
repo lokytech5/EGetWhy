@@ -181,7 +181,6 @@ export const getPostByHashtag = async (req: Request, res: Response) => {
 };
 
 
-
 export const addComment = async (req: Request, res: Response) => {
   const { postId } = req.params;
   const { userId, content } = req.body;

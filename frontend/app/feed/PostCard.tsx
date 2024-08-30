@@ -4,7 +4,8 @@ import { FaHeart, FaComment, FaShare } from 'react-icons/fa';
 import { format, parseISO } from 'date-fns';
 import { extractUserInitials } from '../utils/userInitials';
 import useLikes from '../hooks/useLikes';
-import usePostLikes from '../hooks/usePostLikes'; // Import the new hook
+import usePostLikes from '../hooks/usePostLikes';
+import useComments from '../hooks/useComments';
 
 interface Comment {
   commentId: string;
@@ -57,6 +58,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   // Use the useLikes hook for mutation
   const { mutate: likePost } = useLikes();
 
+  // Use the updated useComments hook
+  const { mutate: addComment } = useComments(PostID);
+
   useEffect(() => {
     if (postLikes) {
       setLikesCount(postLikes.data.totalLikes);
@@ -65,18 +69,32 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
 
   const handleAddComment = () => {
     if (newComment.trim() && wordsLeft >= 0) {
-      setComments([
-        ...comments,
-        {
-          commentId: Date.now().toString(),
-          userId: userProfile.fullName,
-          fullName: userProfile.fullName,
-          content: newComment,
-          createdAt: new Date().toISOString(),
-          isAnonymous: false,
-        },
-      ]);
+      // Optimistically update the UI
+      const optimisticComment = {
+        commentId: Date.now().toString(),
+        userId: userProfile.fullName,
+        fullName: userProfile.fullName,
+        content: newComment,
+        createdAt: new Date().toISOString(),
+        isAnonymous: false,
+      };
+      
+      setComments((prevComments) => [...prevComments, optimisticComment]);
       setNewComment(''); // Clear input field after submission
+
+      // Call mutation to update the server
+      addComment(
+        {
+          userId: userProfile.fullName,
+          content: newComment,
+        },
+        {
+          onError: () => {
+            // Revert UI state if the mutation fails
+            setComments((prevComments) => prevComments.filter(comment => comment.commentId !== optimisticComment.commentId));
+          }
+        }
+      );
     }
   };
 
