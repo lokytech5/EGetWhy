@@ -114,6 +114,19 @@ functions:
               - Authorization
             allowCredentials: true
 
+  getPostLikes:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/{postId}/likes
+          method: get
+          cors:
+            origin: "http://localhost:3000"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
   addComment:
     handler: src/server.handler
     events:
@@ -145,19 +158,6 @@ functions:
           request:
             schemas:
               application/json: ${file(schemas/likePost.json)}
-
-  getPostLikes:
-    handler: src/server.handler
-    events:
-      - http:
-          path: api/posts/{postId}/likes
-          method: get
-          cors:
-            origin: "http://localhost:3000"
-            headers:
-              - Content-Type
-              - Authorization
-            allowCredentials: true
           
 resources:
   Resources:

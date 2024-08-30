@@ -247,7 +247,7 @@ export const likePost = async (req: Request, res: Response) => {
 
 export const getPostLikes = async (req: Request, res: Response) => {
   const { postId } = req.params;
-  const { userId } = req.query; // Assuming you pass the user ID as a query parameter
+  const { userId } = req.query;
 
   try {
     const params = {
