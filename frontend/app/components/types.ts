@@ -135,7 +135,6 @@ export interface RegisterData {
   export interface PostLikesResponse {
     data: {
       totalLikes: number;
-      userHasLiked: boolean;
     },
     meta: Record<string, never>;
 

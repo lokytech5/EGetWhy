@@ -60,7 +60,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   useEffect(() => {
     if (postLikes) {
       setLikesCount(postLikes.data.totalLikes);
-      setHasLiked(postLikes.data.userHasLiked);
     }
   }, [postLikes]);
 

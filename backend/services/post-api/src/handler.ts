@@ -247,7 +247,6 @@ export const likePost = async (req: Request, res: Response) => {
 
 export const getPostLikes = async (req: Request, res: Response) => {
   const { postId } = req.params;
-  const { userId } = req.query;
 
   try {
     const params = {
@@ -263,10 +262,9 @@ export const getPostLikes = async (req: Request, res: Response) => {
 
     const totalLikes = data.Items?.length || 0;
 
-    const userHasLiked = data.Items?.some((item) => item.UserID === userId);
-
-    res.status(200).json(buildResponse({ totalLikes, userHasLiked }));
+    res.status(200).json(buildResponse({ totalLikes }));
   } catch (error) {
+    console.error('Error fetching likes:', error);
     if (error instanceof Error) {
       res.status(500).json(buildResponse(null, { error: `Error fetching likes: ${error.message}` }));
     } else {
@@ -274,7 +272,6 @@ export const getPostLikes = async (req: Request, res: Response) => {
     }
   }
 };
-
 
 export const getTrendingHashtags = async (req: Request, res: Response) => {
   const params = {
