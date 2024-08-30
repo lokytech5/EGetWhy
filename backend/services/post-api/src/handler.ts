@@ -215,6 +215,31 @@ export const addComment = async (req: Request, res: Response) => {
   }
 };
 
+export const getCommentsByPostId = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+
+  const params = {
+    TableName: process.env.COMMENTS_TABLE!,
+    FilterExpression: 'PostID = :postId',
+    ExpressionAttributeValues: {
+      ':postId': postId,
+    },
+  };
+
+  try {
+    const command = new ScanCommand(params);
+    const data = await docClient.send(command);
+
+    res.status(200).json(buildResponse(data.Items));
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json(buildResponse(null, { error: `Error fetching comments: ${error.message}` }));
+    } else {
+      res.status(500).json(buildResponse(null, { error: 'Unknown error occurred' }));
+    }
+  }
+}
+
 export const likePost = async (req: Request, res: Response) => {
   const { postId } = req.params;
   const { userId } = req.body;
@@ -297,7 +322,7 @@ export const getTrendingHashtags = async (req: Request, res: Response) => {
 
     const trendingHashtags = Object.entries(hashtagCounts)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 10) // Limit to top 10 trending hashtags
+      .slice(0, 10)
       .map((entry) => ({ hashtag: entry[0], count: entry[1] }));
 
     res.status(200).json(buildResponse(trendingHashtags));

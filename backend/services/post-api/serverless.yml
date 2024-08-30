@@ -127,6 +127,19 @@ functions:
               - Authorization
             allowCredentials: true
 
+  getCommentsByPostId:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/{postId}/comments/list
+          method: get
+          cors:
+            origin: "http://localhost:3000"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
   addComment:
     handler: src/server.handler
     events:
