@@ -139,4 +139,21 @@ export interface RegisterData {
     meta: Record<string, never>;
 
   }
+
+  export interface CommentData {
+    userId: string | undefined;
+    content: string;
+  }
+
+  export interface CommentResponse {
+    data: {
+      CommentID: string;
+      PostID: string;
+      UserID: string;
+      Content: string;
+      CreatedAt: string;
+      UpdatedAt: string;
+    },
+    meta: Record<string, never>;
+  }
   
