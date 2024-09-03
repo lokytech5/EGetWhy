@@ -1,6 +1,4 @@
-import React from 'react'
 import { CommentResponse } from '../components/types'
-import { AxiosError } from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { postApiClient } from '../utils/apiClient'
 

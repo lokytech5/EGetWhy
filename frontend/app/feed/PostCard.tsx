@@ -1,3 +1,4 @@
+// @typescript-eslint/no-explicit-any
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaHeart, FaComment, FaShare } from 'react-icons/fa';

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { PostLikesResponse } from '../components/types';
-import { postApiClient } from '../utils/apiClient';
 import { useQuery } from '@tanstack/react-query';
 
 
