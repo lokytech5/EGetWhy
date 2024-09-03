@@ -88,11 +88,11 @@ functions:
               - Authorization
             allowCredentials: true
 
-  getPostByHashtag:
+  getPostById:
     handler: src/server.handler
     events:
       - http:
-          path: api/hashtags/{hashtag}/posts
+          path: api/posts/{postId}
           method: get
           cors:
             origin: "http://localhost:3000"
@@ -101,11 +101,11 @@ functions:
               - Authorization
             allowCredentials: true
 
-  getPostById:
+  getPostByHashtag:
     handler: src/server.handler
     events:
       - http:
-          path: api/posts/{postId}
+          path: api/hashtags/{hashtag}/posts
           method: get
           cors:
             origin: "http://localhost:3000"

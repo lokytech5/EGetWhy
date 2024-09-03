@@ -145,7 +145,7 @@ export interface RegisterData {
     content: string;
   }
 
-  export interface CommentResponse {
+  export interface Comment {
     data: {
       CommentID: string;
       PostID: string;
@@ -154,6 +154,11 @@ export interface RegisterData {
       CreatedAt: string;
       UpdatedAt: string;
     },
+    meta: Record<string, never>;
+  }
+
+  export interface CommentResponse {
+    data: Comment[];
     meta: Record<string, never>;
   }
   

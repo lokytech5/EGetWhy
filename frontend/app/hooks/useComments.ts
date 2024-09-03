@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { CommentData, CommentResponse } from '../components/types';
+import { CommentData, Comment } from '../components/types';
 import { AxiosError } from 'axios';
 import { postApiClient } from '../utils/apiClient';
 import { showToastError, showToastSuccess } from '../utils/toastUtils';
@@ -9,9 +9,9 @@ interface ErrorResponse {
 }
 
 const useComments = (postId: string) => {
-    return useMutation <CommentResponse, AxiosError<ErrorResponse>, CommentData> (
+    return useMutation <Comment, AxiosError<ErrorResponse>, CommentData> (
         async(commentData: CommentData) => {
-            const response = await postApiClient.post<CommentResponse>(`/api/posts/${postId}/comments`, commentData);
+            const response = await postApiClient.post<Comment>(`/api/posts/${postId}/comments`, commentData);
             return response.data;
         },
         {
