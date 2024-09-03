@@ -36,6 +36,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   const [showComments, setShowComments] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [comments, setComments] = useState<any[]>([]); // State for comments
 
   const MAX_WORDS = 50;
   const wordsLeft = MAX_WORDS - newComment.trim().split(/\s+/).filter(Boolean).length;
@@ -59,18 +61,26 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
     }
   }, [postLikes]);
 
+  useEffect(() => {
+    if (fetchedComments) {
+      setComments(fetchedComments.data); // Update comments from fetched data
+      setCommentCount(fetchedComments.data.length); // Set comment count
+    }
+  }, [fetchedComments]);
+
   const handleAddComment = () => {
     if (newComment.trim() && wordsLeft >= 0) {
       const optimisticComment = {
-        commentId: Date.now().toString(),
-        userId: userProfile.fullName,
-        fullName: userProfile.fullName,
-        content: newComment,
-        createdAt: new Date().toISOString(),
+        CommentID: Date.now().toString(), // Use "CommentID" to match fetched comment keys
+        PostID: PostID,
+        UserID: userProfile.fullName,
+        Content: newComment,
+        CreatedAt: new Date().toISOString(),
+        UpdatedAt: new Date().toISOString(),
         isAnonymous: false,
       };
-      
-      // Optimistically update the comments state
+
+      setComments((prevComments) => [...prevComments, optimisticComment]); // Optimistically update comments state
       setNewComment(''); // Clear input field after submission
 
       // Call mutation to update the server
@@ -81,11 +91,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
         },
         {
           onSuccess: () => {
-            // Refetch comments after successful addition
-            setShowComments(true);
+            setCommentCount((prevCount) => prevCount + 1); // Increment comment count
           },
           onError: () => {
-            // Handle error state if needed
+            setComments((prevComments) => prevComments.filter(comment => comment.CommentID !== optimisticComment.CommentID)); // Revert state if mutation fails
           }
         }
       );
@@ -176,7 +185,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
             className="flex items-center space-x-2 text-gray-400 hover:text-blue-500 transition-colors duration-200 ease-in-out"
           >
             <FaComment className="w-5 h-5" />
-            <span>Comment</span>
+            <span>{commentCount} Comment{commentCount !== 1 ? 's' : ''}</span>
           </button>
 
           {/* Share Button */}
@@ -219,7 +228,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
               ) : isError ? (
                 <p>Error loading comments.</p>
               ) : (
-                fetchedComments?.data.map((comment) => (
+                comments.map((comment) => (
                   <div key={comment.CommentID} className="flex items-start space-x-3">
                     <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
                       <span className="text-sm font-bold">

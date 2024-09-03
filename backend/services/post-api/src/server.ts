@@ -14,9 +14,9 @@ app.get("/api/feed", getAllPosts);
 app.get("/api/hashtags/trending", getTrendingHashtags)
 app.get("/api/hashtags/:hashtag/posts", getPostByHashtag);
 app.get("/api/posts/:postId", getPostById);
-app.get('/api/posts/:postId/comments/list', validateToken, getCommentsByPostId);
 app.post("/api/posts/:postId/comments", validateToken, addComment);
-app.get('/api/posts/:postId/likes', getPostLikes);
+app.get("/api/posts/:postId/comments/list", validateToken, getCommentsByPostId);
+app.get("/api/posts/:postId/likes", getPostLikes);
 app.post("/api/posts/:postId/like", validateToken, likePost);
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
