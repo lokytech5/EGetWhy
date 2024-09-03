@@ -6,16 +6,7 @@ import { extractUserInitials } from '../utils/userInitials';
 import useLikes from '../hooks/useLikes';
 import usePostLikes from '../hooks/usePostLikes';
 import useComments from '../hooks/useComments';
-
-interface Comment {
-  commentId: string;
-  userId: string;
-  fullName: string;
-  profilePictureURL?: string;
-  content: string;
-  createdAt: string;
-  isAnonymous: boolean;
-}
+import usePostComments from '../hooks/usePostComments';
 
 export interface Post {
   PostID: string;
@@ -41,15 +32,13 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   const { PostID, Content, Hashtags, IsAnonymous, CreatedAt } = post;
 
-  const [comments, setComments] = useState<Comment[]>([]); // Start with empty comments
   const [newComment, setNewComment] = useState('');
   const [showComments, setShowComments] = useState(false);
-  const [hasLiked, setHasLiked] = useState(false); // Maintain local state to toggle like/unlike
-  const [likesCount, setLikesCount] = useState(0); // State for like count
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
 
-  const MAX_WORDS = 50; // Maximum words allowed
+  const MAX_WORDS = 50;
   const wordsLeft = MAX_WORDS - newComment.trim().split(/\s+/).filter(Boolean).length;
-
   const formattedDate = CreatedAt ? format(parseISO(CreatedAt), "MM/dd/yyyy, hh:mm a") : 'Invalid Date';
 
   // Fetch initial likes data using the hook
@@ -58,8 +47,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   // Use the useLikes hook for mutation
   const { mutate: likePost } = useLikes();
 
-  // Use the updated useComments hook
+  // Hook to add a comment
   const { mutate: addComment } = useComments(PostID);
+
+  // Hook to fetch comments
+  const { data: fetchedComments, isLoading, isError } = usePostComments(PostID);
 
   useEffect(() => {
     if (postLikes) {
@@ -69,7 +61,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
 
   const handleAddComment = () => {
     if (newComment.trim() && wordsLeft >= 0) {
-      // Optimistically update the UI
       const optimisticComment = {
         commentId: Date.now().toString(),
         userId: userProfile.fullName,
@@ -79,7 +70,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
         isAnonymous: false,
       };
       
-      setComments((prevComments) => [...prevComments, optimisticComment]);
+      // Optimistically update the comments state
       setNewComment(''); // Clear input field after submission
 
       // Call mutation to update the server
@@ -89,9 +80,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
           content: newComment,
         },
         {
+          onSuccess: () => {
+            // Refetch comments after successful addition
+            setShowComments(true);
+          },
           onError: () => {
-            // Revert UI state if the mutation fails
-            setComments((prevComments) => prevComments.filter(comment => comment.commentId !== optimisticComment.commentId));
+            // Handle error state if needed
           }
         }
       );
@@ -99,19 +93,16 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
   };
 
   const handleLikeToggle = () => {
-    const optimisticHasLiked = !hasLiked; // Determine the optimistic state
-    const optimisticLikesCount = likesCount + (optimisticHasLiked ? 1 : -1); // Adjust like count
+    const optimisticHasLiked = !hasLiked;
+    const optimisticLikesCount = likesCount + (optimisticHasLiked ? 1 : -1);
 
-    // Optimistically update UI
     setHasLiked(optimisticHasLiked);
     setLikesCount(optimisticLikesCount);
 
-    // Call mutation to update the server
     likePost(
       { userId: userProfile.fullName, postId: PostID },
       {
         onError: () => {
-          // Revert UI state if the mutation fails
           setHasLiked(!optimisticHasLiked);
           setLikesCount(likesCount);
         }
@@ -221,32 +212,34 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
               </div>
             </div>
 
-            {/* Existing Comments */}
+            {/* Display Comments Section */}
             <div className="space-y-4 max-h-60 overflow-y-auto">
-              {comments.map((comment) => (
-                <div key={comment.commentId} className="flex items-start space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                    {comment.isAnonymous ? (
-                      <span className="text-sm font-bold">A</span>
-                    ) : (
+              {isLoading ? (
+                <p>Loading comments...</p>
+              ) : isError ? (
+                <p>Error loading comments.</p>
+              ) : (
+                fetchedComments?.data.map((comment) => (
+                  <div key={comment.CommentID} className="flex items-start space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
                       <span className="text-sm font-bold">
-                        {extractUserInitials(comment.fullName)}
+                        {extractUserInitials(comment.UserID)}
                       </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="bg-white p-3 rounded-lg text-black w-full">
-                      <div className="flex justify-between items-center">
-                        <h5 className="text-sm font-semibold">
-                          {comment.isAnonymous ? "Anonymous" : comment.fullName}
-                        </h5>
-                        <p className="text-xs text-gray-500">{format(parseISO(comment.createdAt), "MM/dd/yyyy, hh:mm a")}</p>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <div className="bg-white p-3 rounded-lg text-black w-full">
+                        <div className="flex justify-between items-center">
+                          <h5 className="text-sm font-semibold">{comment.UserID}</h5>
+                          <p className="text-xs text-gray-500">
+                            {format(parseISO(comment.CreatedAt), "MM/dd/yyyy, hh:mm a")}
+                          </p>
+                        </div>
+                        <p className="mt-2">{comment.Content}</p>
                       </div>
-                      <p className="mt-2">{comment.content}</p>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         )}

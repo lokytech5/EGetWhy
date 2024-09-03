@@ -146,15 +146,12 @@ export interface RegisterData {
   }
 
   export interface Comment {
-    data: {
       CommentID: string;
       PostID: string;
       UserID: string;
       Content: string;
       CreatedAt: string;
       UpdatedAt: string;
-    },
-    meta: Record<string, never>;
   }
 
   export interface CommentResponse {
