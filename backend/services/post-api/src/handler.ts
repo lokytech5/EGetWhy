@@ -331,3 +331,58 @@ export const getTrendingHashtags = async (req: Request, res: Response) => {
     res.status(500).json(buildResponse (null, { error: 'Could not retrieve trending hashtags' }));
   }
 }
+
+export const getBatchLikesAndComments = async (req: Request, res: Response) => {
+  const { postIds }: { postIds: string[] } = req.body;
+
+  if (!postIds || !Array.isArray(postIds)) {
+    return res.status(400).json({ error: 'Invalid request. Post IDs are required as an array.' });
+  }
+
+  try {
+    const filterExpression = postIds.map((_, index) => `PostID = :postId${index}`).join(' OR ');
+
+    const expressionAttributeValues = postIds.reduce((acc, postId, index) => {
+      acc[`:postId${index}`] = postId;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const commentParams = {
+      TableName: process.env.COMMENTS_TABLE!,
+      FilterExpression: filterExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
+    };
+
+    const likeParams = {
+      TableName: process.env.LIKES_TABLE!,
+      FilterExpression: filterExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
+    };
+
+    const [commentsData, likesData] = await Promise.all([
+      docClient.send(new ScanCommand(commentParams)),
+      docClient.send(new ScanCommand(likeParams)),
+    ]);
+
+    // Check if we have comments and likes data from our request
+    const comments = commentsData.Items || [];
+    const likes = likesData.Items || [];
+
+    const groupedLikes = likes.reduce((acc, like) => {
+      (acc[like.PostID] = acc[like.PostID] || []).push(like);
+      return acc;
+    }, {} as Record<string, any[]>);
+
+    const groupedComments = comments.reduce((acc, comment) => {
+      (acc[comment.PostID] = acc[comment.PostID] || []).push(comment);
+      return acc;
+    }, {} as Record<string, any[]>);
+
+    res.status(200).json(buildResponse({ likes: groupedLikes, comments: groupedComments }));
+  } catch (error) {
+    console.error("Error fetching batch likes and comments:", error);
+    res.status(500).json(buildResponse(null, { error: 'Error fetching batch likes and comments' }));
+  }
+};
+
+

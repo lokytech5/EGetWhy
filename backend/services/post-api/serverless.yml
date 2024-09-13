@@ -171,6 +171,19 @@ functions:
           request:
             schemas:
               application/json: ${file(schemas/likePost.json)}
+
+  getBatchLikesAndComments:
+    handler: src/server.handler
+    events:
+      - http:
+          path: api/posts/batchLikesAndComments
+          method: post
+          cors:
+            origin: "http://localhost:3000"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
           
 resources:
   Resources:
