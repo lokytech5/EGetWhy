@@ -20,6 +20,8 @@ const FeedPage = () => {
   const { mutate: createPost } = usePost();
   const [posts, setPosts] = useState<PostInterface[]>([]);
 
+  const userProfile = useUserStore((state) => state.user);
+
   useEffect(() => {
     if (data) {
       console.log('Fetched data:', data);
@@ -68,6 +70,10 @@ const FeedPage = () => {
       IsAnonymous: isAnonymous,
       CreatedAt: new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
+      userDetails: {
+        username: isAnonymous ? 'Anonymous' : userProfile?.username || 'Unknown', // Fallback to 'Unknown' if no username
+        profilePicture: userProfile?.profilePictureURL || undefined, // Fallback to undefined if no profile picture
+      },
     };
 
     // Update the posts state optimistically
