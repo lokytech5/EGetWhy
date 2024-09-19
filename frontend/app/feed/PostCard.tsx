@@ -19,6 +19,10 @@ export interface Post {
   IsAnonymous: boolean;
   CreatedAt: string;
   UpdatedAt: string;
+  userDetails: {
+    username: string;
+    profilePicture?: string;
+  };
 }
 
 interface UserProfile {
@@ -32,7 +36,7 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
-  const { PostID, Content, Hashtags, IsAnonymous, CreatedAt } = post;
+  const { PostID, Content, Hashtags, IsAnonymous, CreatedAt, userDetails } = post;
 
   const [newComment, setNewComment] = useState('');
   const [showComments, setShowComments] = useState(false);
@@ -139,14 +143,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, userProfile }) => {
                   />
                 ) : (
                   <span className="text-sm font-bold">
-                    {extractUserInitials(userProfile.fullName)}
+                    {extractUserInitials(userDetails.username)}
                   </span>
                 )}
               </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold">
-                {IsAnonymous ? "Anonymous" : userProfile.fullName} 
+                {IsAnonymous ? "Anonymous" : userDetails.username} 
               </h4>
               <span className="text-xs text-gray-400">Jobs in Tech</span>
             </div>

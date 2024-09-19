@@ -90,6 +90,10 @@ export interface RegisterData {
     IsAnonymous: boolean;
     CreatedAt: string;
     UpdatedAt: string;
+    userDetails: {
+      username: string;
+      profilePicture?: string;
+    };
   }
   
   export interface PostFeedResponse {

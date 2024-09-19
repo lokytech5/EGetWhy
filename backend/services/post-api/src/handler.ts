@@ -5,9 +5,12 @@ import { BatchGetCommand, BatchWriteCommand, GetCommand, PutCommand, QueryComman
 import { buildResponse } from "../../../lib/responseUtils";
 
 const POSTS_TABLE = process.env.POSTS_TABLE;
+const USERS_TABLE = process.env.USERS_TABLE;
+
 
 export const createPost = async (req: Request, res: Response) => {
-  const { userId, content, hashtags, categoryID, isAnonymous } = req.body;
+  const userId = req.user;
+  const { content, hashtags, categoryID, isAnonymous } = req.body;
   const timestamp = new Date().toISOString();
 
   if (!userId || !content) {
@@ -75,7 +78,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
   const params: {
     TableName: string;
     Limit: number;
-    ExclusiveStartKey?: Record<string, any>; // Optional field to handle pagination key
+    ExclusiveStartKey?: Record<string, any>;
   } = {
     TableName: POSTS_TABLE!,
     Limit: limit ? parseInt(limit as string) : 10,
@@ -88,11 +91,48 @@ export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const command = new ScanCommand(params);
     const data = await docClient.send(command);
+    const posts = data.Items || [];
 
-    res.status(200).json({
-  posts: data.Items,
-  lastKey: data.LastEvaluatedKey || null,
-});
+    const userIds = [... new Set(posts.map(post => post.UserID))];
+
+    if(userIds.length > 0) {
+      const userKeys = userIds.map(userId => ({ userId }));
+      const userParams = {
+        RequestItems: {
+          [USERS_TABLE!]: {
+            Keys: userKeys,
+          }
+        }
+      }
+
+      const usersCommand = new BatchGetCommand(userParams);
+      const usersData = await docClient.send(usersCommand);
+      const users = usersData.Responses?.[USERS_TABLE!] || [];
+
+      const postsWithUserDetails = posts.map(post => {
+        const user = users.find(u => u.userId === post.UserID);
+        return {
+          ...post,
+          userDetails: user ? {
+            username: user.username,
+            profilePicture: user.profilePictureURL || null, // Example fields
+          } : {
+            username: 'ANONYMOUS',
+            profilePicture: null, // Or a default anonymous picture
+          },
+        };
+      });
+      res.status(200).json({
+        posts: postsWithUserDetails,
+        lastKey: data.LastEvaluatedKey || null,
+      });
+    } else {
+      // If there are no posts or no user IDs
+      res.status(200).json({
+        posts: [],
+        lastKey: null,
+      });
+    }
 
   } catch (error) {
     if (error instanceof Error) {

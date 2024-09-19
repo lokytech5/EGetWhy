@@ -9,7 +9,10 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'dev'}
   environment:
-    USERS_TABLE: ${cf:backend-${self:provider.stage}.UsersTableName}
+    USERS_TABLE_ARN: 
+      "Fn::ImportValue": UsersTableArn-${self:provider.stage}
+    USERS_TABLE_NAME: 
+      "Fn::ImportValue": UsersTableName-${self:provider.stage}
     POSTS_TABLE: ${self:custom.projectPrefix}-posts-table-${self:provider.stage}
     POSTHASHTAGS_TABLE: ${self:custom.projectPrefix}-posthashtags-table-${self:provider.stage}
     CATEGORIES_TABLE: ${self:custom.projectPrefix}-categories-table-${self:provider.stage}
@@ -41,7 +44,7 @@ provider:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-categories-table-${self:provider.stage}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-likes-table-${self:provider.stage}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.projectPrefix}-posthashtags-table-${self:provider.stage}
-
+            - ${self:provider.environment.USERS_TABLE_ARN}
 custom:
   projectPrefix: egetwhy
 
