@@ -11,4 +11,8 @@ export const transformPostResponseToPost = (response: PostResponse['data']): Pos
     IsAnonymous: response.isAnonymous,
     CreatedAt: response.createdAt,
     UpdatedAt: response.updatedAt,
+    userDetails: {
+        username: response.isAnonymous ? 'Anonymous' : 'Unknown',
+        profilePicture: undefined,
+      },
 });
