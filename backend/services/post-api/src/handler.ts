@@ -5,7 +5,7 @@ import { BatchGetCommand, BatchWriteCommand, GetCommand, PutCommand, QueryComman
 import { buildResponse } from "../../../lib/responseUtils";
 
 const POSTS_TABLE = process.env.POSTS_TABLE;
-const USERS_TABLE = process.env.USERS_TABLE;
+const USERS_TABLE = process.env.USERS_TABLE_NAME;
 
 
 export const createPost = async (req: Request, res: Response) => {
