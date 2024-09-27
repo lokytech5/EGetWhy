@@ -4,6 +4,7 @@ import { v1 as uuidv1 } from 'uuid';
 import { BatchGetCommand, BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { buildResponse } from "../../../lib/responseUtils";
 import { sendNotification } from "./notificationUtils";
+import { getUserDetails } from "./userUtils";
 
 const POSTS_TABLE = process.env.POSTS_TABLE;
 const USERS_TABLE = process.env.USERS_TABLE_NAME;
@@ -61,19 +62,10 @@ export const createPost = async (req: Request, res: Response) => {
   };
 
   try {
-    const usercommand = new GetCommand(userParams);
-    const userData = await docClient.send(usercommand);
-
-    const user = userData.Item;
-
-    if(!user) {
-      return res.status(404).json({error: "User not found "});
-    }
+    const user = await getUserDetails(userId);
 
     const { email, fullName } = user;
-    console.log(user);
-    
-    
+       
     const postCommand = new PutCommand(postParams);
     await docClient.send(postCommand);
 
@@ -86,6 +78,7 @@ export const createPost = async (req: Request, res: Response) => {
       userEmail: email,
       userName: fullName,
       postContent: content,
+      notificationType: "post_created"
     });
 
     res.status(201).json(buildResponse(postParams.Item));
@@ -271,6 +264,31 @@ export const addComment = async (req: Request, res: Response) => {
   try {
     const command = new PutCommand(params);
     await docClient.send(command);
+
+    const postParams = {
+      TableName: process.env.POSTS_TABLE!,
+      Key: { PostID: postId }
+    };
+
+    const postCommand = new GetCommand(postParams);
+    const postData = await docClient.send(postCommand);
+    const post = postData.Item;
+
+    if(!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const user = await getUserDetails(post.UserID);
+
+    const { email , fullName } = user;
+
+    await sendNotification({
+      userEmail: email,
+      userName: fullName,
+      postContent: `Your poost with ID: ${postId} has received a new comment: "${content}"`,
+      notificationType: "post_commented"
+    });
+
     res.status(201).json(buildResponse(params.Item));
   } catch (error) {
     if (error instanceof Error) {
@@ -325,6 +343,31 @@ export const likePost = async (req: Request, res: Response) => {
   try {
     const command = new PutCommand(params);
     await docClient.send(command);
+
+    const postParams = {
+      TableName: process.env.POSTS_TABLE!,
+      Key: { PostID: postId }
+    };
+
+    const postCommand = new GetCommand(postParams);
+    const postData = await docClient.send(postCommand);
+    const post = postData.Item;
+
+    if(!post){
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const user = await getUserDetails(post.UserID);
+
+    const { email, fullName } = user;
+
+    await sendNotification({
+      userEmail: email,
+      userName: fullName,
+      postContent: `Your post with ID: ${postId} has been liked.`,
+      notificationType: "post_liked",
+    })
+
     res.status(201).json(buildResponse(params.Item));
   } catch (error) {
     if (error instanceof Error) {
